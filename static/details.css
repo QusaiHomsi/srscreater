@@ -1,0 +1,71 @@
+.container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column; /* Arrange content vertically */
+  align-items: center; /* Center items horizontally */
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%; /* Adjust width as needed */
+}
+
+table,
+th,
+td {
+  border: 1px solid black; /* Add border to table, table headers, and table cells */
+}
+
+th,
+td {
+  padding: 8px; /* Add padding to table cells */
+  text-align: left; /* Align text to the left within table cells */
+}
+
+.title {
+  background-color: lightgray;
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+}
+
+button {
+  width: 150px;
+  height: 60px;
+  background-color: lightgray; /* Adjust as needed */
+  padding: 10px;
+  text-align: center;
+  border: none;
+  border-radius: 10px;
+  margin: 10px; /* Add spacing between buttons */
+  cursor: pointer;
+}
+nav button {
+  background-color: transparent;
+  border-radius: 10px;
+  width: 30px;
+  height: 30px;
+  color: #000000;
+  border: none;
+
+  cursor: pointer;
+}
+nav {
+  background-color: lightgrey;
+  color: black;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  align-content: center;
+  font-size: large;
+}
+
+table select {
+  align-items: top;
+}
+td {
+  vertical-align: top; /* Align content to the top of the cell */
+  text-align: left; /* Align text to the left within the cell */
+}

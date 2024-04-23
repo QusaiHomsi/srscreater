@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ar">
+  <head>
+    <link rel="stylesheet" href="../static/table.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Table Details</title>
+  </head>
+  <body>
+    <img
+      src="{{ url_for('static', filename='../static/uploads/logo.jpg') }}"
+      alt="Logo"
+      class="logo"
+    />
+    <br />
+    <br />
+    <p class="title">وثيقة تحليل متطلبات الخدمات الإلكترونية</p>
+    <p class="title">أتمتة خدمات الهيئة البحرية</p>
+    <p class="title"> {{ table.table_name }}</p>
+    <div class="author">
+      <table class="author" >
+        <tr></tr><th class="author">Author:<div class="author"><input class="print"></input></div></th></tr>
+        <div class="author"><th class="author"><p class="author" id="todayDate"></p></th></div>
+        <tr>
+  <th class="author"><p id="lastUpdated"></p></th>
+        </tr>
+        <tr class="author">
+          <th class="author"><p class="author">Version:<div class="author"><input class="print"></input></div></p></th>
+        </tr>
+      </table>
+    </div>
+      <br><br><br><br>
+
+
+      <table border="1">
+        <thead>
+          <tr>
+            <th colspan="4">الموافقات والتواقيع</th>
+          </tr>
+          <tr><td>الاسم</td> <td>المنصب</td> <td>التاريخ</td>
+            <td>التوقيع</td>
+            
+            
+             
+          </tr>
+          <tr><td></td><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td><td></td></tr>
+          
+          
+        </thead>
+        <tbody>
+          
+          </table>
+        <br><br><br><br><br>
+          <table>
+            <tr>
+            <th colspan="4">الإصدارات</th>
+          </tr>
+          <tr><td>رقم الإصدار</td><td>التاريخ</td> <td>أعده</td><td>التغييرات</td>
+            
+           
+            
+            
+          </tr>
+          <tr><td></td><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td><td></td></tr>
+        </tbody>
+      </table>
+    
+<br><br><br><br><br><br><br><br><br><br><br>
+<div class="service_description">
+  <h1>مقدمة عن الخدمة</h1>
+  <h3>{{ service_description | safe}}</h3>
+</div>
+<br><br><br><br><br><br><br><br><br><br><br>
+<div class="users">
+  <p style="color: red;">أنواع المستخدمين 
+  </p>
+  <h1>سيناريوهات المستخدم وسير الإجراء</h1>
+  <table>
+    <thead>
+      <tr>
+       <th>اسم المستخدم</th>
+        <th>وصف المهام</th>
+        
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      <tr>
+       <td>{{ user.username }}</td> <!-- Display username -->
+        <td>{{ user.user_description | safe}}</td> <!-- Display user description -->
+        
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<p style="color: black;">.يتم شرح جميع الأدوار بالتفصيل في كل مرحلة بالجدول الخاص بسير العمل</p>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<p style="color: red;">قنوات تقديم الخدمة (Service Channels)
+</p>    
+<p>______________________________________________________________________________</p>
+<ul>
+<li>بوابة الخدمات الإلكترونية</li>
+<li>تطبيق سند</li>
+<li>خدمة الجمهور في مبنى الهيئة البحرية </li>
+</ul>
+<p style="color: red;">المستفيد من الخدمة (Service Beneficiary)
+</p>
+<p>______________________________________________________________________________</p>
+<ul>
+  <li>أعمال (مؤسسات فردية \ شركات)</li>
+  <li>أفراد ( أردني\ غير أردني)
+  </li>
+</ul>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+   <p style="color: red;">سيناريوهات المستخدم (User Stories) – شاشات متلقي الخدمة </p>
+    <table>
+      <thead>
+        <tr>
+          <th>الشاشة</th>
+          <th>
+            الوصف (وصف مكونات الشاشة وحقولها والبيانات وتفاصيلها والتحققات
+            وقواعد اعمال)
+          </th>
+          <th>صورة للشاشة</th> 
+          <th>حذف</th>
+          <th>تعديل</th>
+         
+         
+          
+          
+        </tr>
+      </thead>
+      <tbody>
+        {% for screen in table.screens %}
+        <tr>
+          <td>{{ screen.screen_name }}</td>
+          <td style="white-space: nowrap; overflow: auto;"><p>{{ screen.screen_description | safe }}</p></td>
+          <td>
+            {% if screen.screenshot_path %}
+            <img
+              src="{{ url_for('static', filename='uploads/' + screen.screenshot_path) }}"
+              alt="Screenshot"
+              style="max-width: 100px"
+            />
+            {% else %} No screenshot available {% endif %}
+          </td>
+          <td>
+            <form
+              action="/delete_screen/{{ screen.id }}"
+              method="post"
+              onsubmit="return confirm('هل انت متاكد من حذف الشاشة؟')"
+            >
+              <button type="submit">حذف الشاشة</button>
+            </form>
+          </td>
+          <td>
+            <a href="/edit_screen/{{ screen.id }}"
+              ><button>تعديل معلومات الشاشة</button></a
+            >
+          </td>
+         
+       
+         
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <a href="/add_screen_to_table/{{ table.id }}"
+      ><button>اضافة شاشة</button></a
+    >
+    <div>
+      <a href="/"> <button class="screenspage">الصفحة الرئيسة</button></a>
+    </div>
+    <div>
+      <a href="/print/{{ table.id }}"><button>طباعة</button></a>
+    </div>
+    <script>
+      // Get the last modified date of the current document
+      var lastUpdated = new Date(document.lastModified);
+  
+      // Extract date components
+      var day = String(lastUpdated.getDate()).padStart(2, '0');
+      var month = String(lastUpdated.getMonth() + 1).padStart(2, '0'); // January is 0!
+      var year = lastUpdated.getFullYear();
+  
+      // Concatenate date components
+      var lastUpdatedDate = day + '-' + month + '-' + year;
+  
+      // Display the last updated date in the specified paragraph
+      document.getElementById("lastUpdated").innerHTML = "Last updated on " + lastUpdatedDate;
+  
+      // Get today's date
+      var today = new Date();
+  
+      // Extract date components
+      var day = String(today.getDate()).padStart(2, '0');
+      var month = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+      var year = today.getFullYear();
+  
+      // Concatenate date components
+      var todayDate = day + '-' + month + '-' + year;
+  
+      // Display today's date in the specified paragraph
+      document.getElementById("todayDate").innerHTML = "Creation Date:"+todayDate;
+
+      
+    </script>
+  </body>
+</html>

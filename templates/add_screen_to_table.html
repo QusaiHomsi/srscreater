@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../static/addscreen.css" />
+    <script
+      src="https://cdn.tiny.cloud/1/z69tp80jmlesld65z70s45ymnhqlcnp4ec0dsvrxc8tsiyxb/tinymce/5/tinymce.min.js"
+      referrerpolicy="origin"
+    ></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>اضافة شاشة للجدول</title>
+    <style>
+      .form-section {
+        display: none;
+      }
+
+      .form-section.active {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <button
+        type="button"
+        aria-label="Toggle navigation"
+        aria-controls="navbar-toggle-collapse"
+        aria-expanded="false"
+        class="navbar-toggler border-0 mr-0 px-0 float-right"
+        style="font-size: 1em"
+      >
+        <i class="fa fa-bars"></i>
+      </button>
+      <p>Srs Creater</p>
+    </nav>
+    <form
+      id="addScreenForm"
+      action="/create_screen_for_table"
+      method="POST"
+      enctype="multipart/form-data"
+    >
+      <input type="hidden" name="service_id" id="selectedServiceId" />
+      <input type="hidden" name="table_id" value="{{ table_id }}" />
+      <div>
+        <h1>Add Screen to Table</h1>
+        <div>
+          <select id="userDropdown" name="user_id" required class="classic">
+            <option value="">اختر مستخدم</option>
+            {% for user in users %}
+            <option value="{{ user.id }}">{{ user.username }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <br /><br />
+        <div>
+          <select
+            class="classic"
+            name="service_name"
+            style="width: auto"
+            required
+          >
+            <option value="">اختر خدمة</option>
+            {% for service in services %}
+            <option value="{{ service.service_name }}">
+              {{ service.service_name }}
+            </option>
+            {% endfor %}
+          </select>
+          <br /><br />
+        </div>
+        <table>
+          <thead>
+            <tr class="title">
+              <th>صورة الشاشة</th>
+              <th>وصف الشاشة</th>
+              <th>اسم الشاشة</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <input
+                  type="file"
+                  id="file-upload"
+                  name="screenshot_path"
+                  required
+                  style="display: none"
+                  onchange="displayFileName(this)"
+                />
+                <label for="file-upload" class="custom-file-upload">
+                  <i class="fas fa-cloud-upload-alt fa-2x"></i>
+                </label>
+
+                <span id="uploadedFilename"></span>
+              </td>
+              <td>
+                <textarea
+                  id="screen_description"
+                  name="screen_description"
+                  required
+                ></textarea>
+              </td>
+              <td>
+                <input
+                  type="text"
+                  id="screen_name"
+                  name="screen_name"
+                  required
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <!-- Submit button -->
+        <button type="button" id="submitBtn">اضافة</button>
+      </div>
+    </form>
+    <a href="/"> <button class="screenspage">الصفحة الرئيسية</button></a>
+    <div>
+      <button>
+        <a href="./warframetool.html"><i>Warframe Tool</i></a>
+      </button>
+    </div>
+    <script>
+      // Initialize TinyMCE
+      tinymce.init({
+        selector: "textarea#screen_description",
+        height: 200, // Set the height of the editor
+        language: "ar", // Set the language to Arabic
+        plugins: [
+          "advlist autolink lists link image charmap print preview anchor",
+          "searchreplace visualblocks code fullscreen",
+          "insertdatetime media table paste code help wordcount",
+        ],
+        toolbar:
+          "undo redo | formatselect | bold italic backcolor forecolor| \
+               alignleft aligncenter alignright alignjustify | \
+               bullist numlist outdent indent | removeformat | help",
+      });
+
+      // Function to display the uploaded filename
+      function displayFileName(input) {
+        var fileName = input.files[0].name;
+        document.getElementById("uploadedFilename").textContent = fileName;
+      }
+
+      // Submit form when the submit button is clicked
+      document
+        .getElementById("submitBtn")
+        .addEventListener("click", function () {
+          document.getElementById("addScreenForm").submit();
+        });
+    </script>
+  </body>
+</html>

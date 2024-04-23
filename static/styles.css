@@ -1,0 +1,135 @@
+/* Container for the screens */
+.screens-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+/* Style for individual screen */
+.screen {
+  margin: 10px; /* Add spacing around each screen */
+  padding: 10px;
+  /* Remove the border */
+}
+
+/* Style for screen image */
+.screen img {
+  width: 10px; /* Adjust the width as needed */
+  height: 10px;
+  display: flex;
+}
+
+/* Add hover effect */
+.screen img:hover {
+  opacity: 0.8;
+}
+
+/* Style for screen details */
+.screen-details {
+  display: none; /* Hide by default */
+  margin-top: 10px;
+}
+
+/* Simple styling for other elements */
+h1 {
+  color: #333;
+}
+
+button {
+  background-color: transparent;
+  border-radius: 10px;
+  width: 30px;
+  height: 30px;
+  color: #000000;
+  border: none;
+
+  cursor: pointer;
+}
+
+button:hover {
+}
+.addbutton {
+  display: flex; /* Use flexbox */
+  flex-direction: column; /* Arrange items vertically */
+  align-items: center; /* Center items horizontally */
+  justify-content: center; /* Center items vertically */
+  background-color: transparent; /* Set background color to transparent */
+  color: lightgray; /* Set text color to light gray */
+  border: none; /* Remove border */
+  cursor: pointer;
+  width: auto;
+  position: absolute; /* Position the button relative to the viewport */
+  bottom: 20px; /* Distance from the bottom */
+  right: 20px; /* Distance from the right */
+  z-index: 999; /* Ensure it stays on top of other content */
+}
+.addbutton a {
+  color: inherit; /* Set link color to inherit from its parent */
+  text-decoration: none; /* Remove underline */
+}
+.addbutton i {
+  margin-bottom: 5px; /* Add margin below the icon */
+  background-color: transparent;
+  align-items: center;
+  text-decoration: none;
+}
+
+.addbutton:hover {
+}
+nav {
+  background-color: lightgrey;
+  color: black;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  align-content: center;
+  font-size: large;
+}
+/* Style for individual screen */
+/* Style for individual screen */
+/* Style for individual screen */
+.screen {
+  margin: 50px; /* Add spacing around each screen */
+  padding: 10px;
+  border: 1px solid #ccc; /* Add border around each service */
+  width: auto; /* Each service takes 33.33% of the container width minus spacing */
+  box-sizing: border-box; /* Include padding and border in the element's total width */
+  float: left; /* Float each service to display them next to each other */
+  margin-bottom: 20px; /* Add margin between each service */
+  align-items: center;
+  text-align: center;
+  align-content: center;
+  border-radius: 20px;
+  background-color: lightgray;
+}
+
+/* Style for screen image */
+.screen img {
+  width: 100px; /* Make the image fill the container */
+  height: 100px; /* Maintain aspect ratio */
+  display: inline; /* Ensure the image takes up the full width of the container */
+
+  background-size: cover; /* Cover the entire container */
+  background-position: center;
+}
+
+/* Style for service name */
+.screen p {
+  margin-top: 10px;
+}
+
+/* Style for delete button */
+.screen form {
+  margin-top: 10px; /* Add spacing between service name and delete button */
+}
+.screentext {
+  align-content: center;
+  align-items: center;
+}
+nav p {
+  text-align: center;
+  text-justify: auto;
+  font-size: 20px;
+  align-items: center;
+  display: inline-block;
+}

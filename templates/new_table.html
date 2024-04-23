@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="../static/table.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New Table</title>
+    <style>
+      /* Optional: Add some basic styling */
+    </style>
+  </head>
+  <body>
+    <h1>جدول جديد</h1>
+    <form action="/create_table" method="post">
+      <table>
+        <tr>
+          <th><label for="table_name">:اسم الجدول</label></th>
+          <td><input type="text" id="table_name" name="table_name" /></td>
+        </tr>
+        <tr>
+          <th><label for="table_description">:وصف الجدول</label></th>
+          <td>
+            <textarea
+              id="table_description"
+              name="table_description"
+            ></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" style="text-align: center">
+            <input type="submit" value="اضافة" />
+          </td>
+        </tr>
+      </table>
+    </form>
+    <a href="/"> <button class="screenspage">الصفحة الرئيسية</button></a>
+  </body>
+</html>

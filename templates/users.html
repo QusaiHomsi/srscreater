@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="../static/table.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add User</title>
+    <!-- Include TinyMCE -->
+    <script
+      src="https://cdn.tiny.cloud/1/z69tp80jmlesld65z70s45ymnhqlcnp4ec0dsvrxc8tsiyxb/tinymce/5/tinymce.min.js"
+      referrerpolicy="origin"
+    ></script>
+    <script>
+      tinymce.init({
+        selector: "#user_description_editor",
+        language: "ar",
+        plugins:
+          "advlist autolink lists link image charmap print preview anchor",
+        toolbar:
+          "undo redo | formatselect | bold italic backcolor forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat |help",
+        height: 400,
+        content_style:
+          "body { font-family: Arial, sans-serif; font-size: 14px }",
+      });
+    </script>
+  </head>
+  <body>
+    <h1>اضافة مستخدم</h1>
+    <table>
+      <form action="/add_user" method="post">
+        <tr>
+          <td><label for="username">اسم المستخدم</label></td>
+          <td><input type="text" id="username" name="username" required /></td>
+        </tr>
+        <tr>
+          <td><label for="user_description">وصف المستخدم</label></td>
+          <td>
+            <!-- Replace the textarea with TinyMCE -->
+            <textarea
+              required
+              id="user_description_editor"
+              name="user_description"
+            ></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2"><button type="submit">اضافة</button></td>
+        </tr>
+      </form>
+    </table>
+
+    <div>
+      <div></div>
+      <a href="/services">
+        <button class="screenspage">اضافة خدمة جديدة</button>
+      </a>
+    </div>
+    <div>
+      <a href="/userlist">
+        <button class="screenspage">قائمة المستخدمين</button>
+      </a>
+      <a href="/servicelist">
+        <button class="screenspage">قائمة الخدمات</button>
+      </a>
+    </div>
+    <a href="/">
+      <button class="screenspage">الصفحة الرئيسية</button>
+    </a>
+  </body>
+</html>

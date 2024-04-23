@@ -1,0 +1,125 @@
+/* Table styling */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  border: 2px solid black; /* Black border */
+  border-radius: 10px; /* Rounded edges */
+  text-align: right;
+}
+
+th,
+td {
+  border: 1px solid black;
+  padding: 8px;
+  text-align: right;
+  max-width: 400px;
+  text-wrap: wrap;
+  height: auto;
+}
+
+/* Button styling */
+button {
+  background-color: #002060;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 5px; /* Rounded edges */
+}
+
+button:hover {
+  background-color: darkgrey; /* Darker grey background on hover */
+}
+* {
+  text-align: right;
+  direction: rtl;
+}
+
+.logo {
+  position: absolute;
+  top: 20px; /* Adjust the top position as needed */
+  left: 20px; /* Adjust the left position as needed */
+  width: 100px; /* Adjust the width of the logo */
+  height: auto; /* Automatically adjust height while maintaining aspect ratio */
+}
+.title {
+  font-size: 36px;
+  color: #002060;
+}
+.author {
+  text-align: left; /* Align text to the right */
+  width: auto;
+  color: #002060;
+  direction: ltr;
+}
+table .author {
+  background-color: #dbe5f1;
+  border-color: #dbe5f1;
+}
+@media print {
+  /* Hide the border of text area when printing */
+  textarea,
+  input {
+    border: none;
+  }
+}
+
+input {
+  background-color: #dbe5f1;
+  border-color: #002060;
+  border-radius: 10px;
+  text-align: right;
+}
+.print {
+  background-color: #dbe5f1;
+  border-color: #002060;
+  border-radius: 10px;
+  text-align: left;
+}
+
+th {
+  background-color: darkblue;
+  color: white;
+}
+textarea {
+  background-color: #dbe5f1;
+  border-color: #002060;
+  border-radius: 10px;
+  text-align: right;
+  word-wrap: break-word; /* Allow long words to wrap */
+}
+
+td,
+tr,
+th {
+  vertical-align: top; /* Align content to the top of the cell */
+  text-align: right; /* Align text to the left within the cell */
+}
+
+.service_description h1 {
+  color: white;
+  background-color: #002060;
+  width: auto;
+  height: auto;
+  text-align: right;
+}
+.service_description h3 {
+  border: 2px solid darkblue;
+  padding: 10px;
+}
+li {
+  text-align: right;
+}
+ul {
+  padding-right: 0;
+  padding-left: 20px; /* Adjust this value as needed */
+  list-style-position: inside;
+}
+table {
+  direction: rtl;
+}

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="../static/table.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>List</title>
+  </head>
+  <body>
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %} {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %} {% endif %} {% endwith %}
+
+    <h1>الخدمات</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>اسم الخدمة</th>
+          <th>وصف الخدمة</th>
+          <th>حذف</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for service in services %}
+        <tr>
+          <td>{{ service.service_name }}</td>
+          <td>{{ service.service_description | safe }}</td>
+          <td>
+            <form action="/delete_service/{{ service.id }}" method="post">
+              <button type="submit">حذف الخدمة</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <a href="/"> <button class="screenspage">الصفحة الرئيسية</button></a>
+  </body>
+</html>

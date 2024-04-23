@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../static/details.css" />
+    <title>Edit Screen Details</title>
+    <!-- Add your stylesheets and scripts here -->
+    <style>
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      th,
+      td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #f2f2f2;
+      }
+
+      input[type="text"],
+      textarea {
+        width: auto;
+        padding: 5px;
+      }
+
+      .edit-form {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Edit Screen Details</h1>
+    <form
+      action="/update_screen/{{ screen.id }}"
+      method="POST"
+      class="edit-form"
+    >
+      <table>
+        <tr>
+          <th>Attribute</th>
+          <th>Value</th>
+        </tr>
+        <tr>
+          <td>Screen Name</td>
+          <td>
+            <input
+              type="text"
+              name="screen_name"
+              value="{{ screen.screen_name }}"
+            />
+          </td>
+        </tr>
+        <tr>
+          <td>User</td>
+          <td>{{ screen.user.username }}</td>
+        </tr>
+        <tr>
+          <td>User Description</td>
+          <td>
+            <textarea name="user_description">
+{{ screen.user_description }}</textarea
+            >
+          </td>
+        </tr>
+        <tr>
+          <td>Service</td>
+          <td>{{ screen.service.service_name }}</td>
+        </tr>
+        <tr>
+          <td>Service Description</td>
+          <td>
+            <textarea name="service_description">
+{{ screen.service_description }}</textarea
+            >
+          </td>
+        </tr>
+        <!-- Add other screen details here -->
+      </table>
+      <button type="submit">Save Changes</button>
+    </form>
+    <a href="/"> <button>screens page</button></a>
+  </body>
+</html>

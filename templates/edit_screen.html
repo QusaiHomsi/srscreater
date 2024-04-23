@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="../static/table.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Screen</title>
+</head>
+<body>
+    <h1>Edit Screen</h1>
+    <form method="POST">
+        <label for="screen_name">Screen Name:</label>
+        <input type="text" id="screen_name" name="screen_name" value="{{ screen.screen_name }}"><br><br>
+        
+        <label for="screen_description">Screen Description:</label><br>
+        <textarea id="screen_description" name="screen_description">{{ screen.screen_description }}</textarea><br><br>
+        
+        <label for="user_id">Select User:</label>
+        <select id="user_id" name="user_id">
+            {% for user in users %}
+                <option value="{{ user.id }}" {% if user.id == screen.user_id %}selected{% endif %}>{{ user.username }}</option>
+            {% endfor %}
+        </select><br><br>
+        
+        <label for="service_id">Select Service:</label>
+        <select id="service_id" name="service_id">
+            {% for service in services %}
+                <option value="{{ service.id }}" {% if service.id == screen.service_id %}selected{% endif %}>{{ service.service_name }}</option>
+            {% endfor %}
+        </select><br><br>
+        
+        <input type="submit" value="Save Changes">
+    </form>
+</body>
+</html>
