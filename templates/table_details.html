@@ -84,28 +84,27 @@
 </div>
 <br><br><br><br><br><br><br><br><br><br><br>
 <div class="users">
-  <p style="color: red;">أنواع المستخدمين 
-  </p>
+  <p style="color: red;">أنواع المستخدمين</p>
   <h1>سيناريوهات المستخدم وسير الإجراء</h1>
   <table>
     <thead>
       <tr>
-       <th>اسم المستخدم</th>
+        <th>اسم المستخدم</th>
         <th>وصف المهام</th>
-        
       </tr>
     </thead>
     <tbody>
       {% for user in users %}
       <tr>
-       <td>{{ user.username }}</td> <!-- Display username -->
-        <td>{{ user.user_description | safe}}</td> <!-- Display user description -->
-        
+        <td>{{ user.username }}</td> <!-- Display username -->
+        <td>{{ user.user_description | safe }}</td> <!-- Display user description -->
       </tr>
       {% endfor %}
     </tbody>
   </table>
 </div>
+
+
 <p style="color: black;">.يتم شرح جميع الأدوار بالتفصيل في كل مرحلة بالجدول الخاص بسير العمل</p>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 <p style="color: red;">قنوات تقديم الخدمة (Service Channels)

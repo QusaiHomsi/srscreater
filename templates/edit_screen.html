@@ -16,11 +16,18 @@
         <textarea id="screen_description" name="screen_description">{{ screen.screen_description }}</textarea><br><br>
         
         <label for="user_id">Select User:</label>
-        <select id="user_id" name="user_id">
+        <div>
             {% for user in users %}
-                <option value="{{ user.id }}" {% if user.id == screen.user_id %}selected{% endif %}>{{ user.username }}</option>
+            <input
+              type="checkbox"
+              id="user_{{ user.id }}"
+              name="user_ids"
+              value="{{ user.id }}"
+              {% if user.id in selected_user_ids %}checked{% endif %}
+            />
+            <label for="user_{{ user.id }}">{{ user.username }}</label><br />
             {% endfor %}
-        </select><br><br>
+          </div><br><br>
         
         <label for="service_id">Select Service:</label>
         <select id="service_id" name="service_id">

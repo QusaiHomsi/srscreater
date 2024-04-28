@@ -14,7 +14,6 @@ app.config['CKEDITOR_SERVE_LOCAL'] = True
 
 db = SQLAlchemy(app)
 
-# Define database models
 class ServiceName(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     service_name = db.Column(db.String(100), nullable=False)
@@ -25,7 +24,9 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), nullable=False)
     user_description = db.Column(db.Text, nullable=True)
-    screens = db.relationship('Screen', backref='user', lazy=True)
+
+    # Define many-to-many relationship with Screen model
+    screens = db.relationship('Screen', secondary='screen_user', backref='users')
 
 class Screen(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -33,9 +34,7 @@ class Screen(db.Model):
     screen_description = db.Column(db.Text, nullable=True)
     screenshot_path = db.Column(db.String(255), nullable=True)
     service_id = db.Column(db.Integer, db.ForeignKey('service_name.id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     service_description = db.Column(db.Text, nullable=True)
-    user_description = db.Column(db.Text, nullable=True)
     table_id = db.Column(db.Integer, db.ForeignKey('table.id'), nullable=True)
 
 class Table(db.Model):
@@ -44,9 +43,14 @@ class Table(db.Model):
     table_description = db.Column(db.Text, nullable=True)
     screens = db.relationship('Screen', backref='table', lazy=True)
 
+# Define association table for many-to-many relationship between Screen and User
+screen_user = db.Table('screen_user',
+    db.Column('screen_id', db.Integer, db.ForeignKey('screen.id'), primary_key=True),
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True)
+)
+
 # Create the database tables
 with app.app_context():
-   
     db.create_all()
 
 # Route to render the homepage template and pass data to it
@@ -117,20 +121,22 @@ def display_tables():
 from flask import render_template
 
 @app.route('/table/<int:table_id>')
-def display_table_details(table_id):
-    table = Table.query.get_or_404(table_id)
+def table_details(table_id):
+    table = Table.query.get(table_id)
     service_name = None
     service_description = None
-    users = User.query.all()  # Initialize users with a default value
-    
+    users = set()
+    for screen in table.screens:
+        for user in screen.users:
+            users.add(user)
     if table.screens:
         # If there are screens associated with the table, get the service name from the first screen
         screen = table.screens[0]
         service_name = screen.service.service_name
         # Fetch service description based on service name
         service_description = ServiceName.query.filter_by(service_name=service_name).first().service_description
-        
-    return render_template('table_details.html', table=table, service_name=service_name, service_description=service_description, users=users)
+
+    return render_template('table_details.html', table=table, users=users,  service_name=service_name, service_description=service_description)
 @app.route('/print/<int:table_id>')
 def print(table_id):
     table = Table.query.get_or_404(table_id)
@@ -147,9 +153,9 @@ def print(table_id):
 
 
 
-@app.route('/add_screen_to_table/warframetool.html')
-def warframetool():
-    return render_template('warframetool.html')
+@app.route('/add_screen_to_table/wireframe.html')
+def wireframetool():
+    return render_template('wireframe.html')
 @app.route('/new_table')
 def new_table_form():
     return render_template('new_table.html')
@@ -346,6 +352,8 @@ def delete_table(table_id):
     return redirect('/')
 
 
+from flask import request, redirect, flash
+
 @app.route('/create_screen_for_table', methods=['POST'])
 def create_screen_for_table():
     if request.method == 'POST':
@@ -353,30 +361,15 @@ def create_screen_for_table():
         screen_name = request.form['screen_name']
         screen_description = request.form['screen_description']
         service_name = request.form['service_name']
-        user_id = request.form['user_id']
         table_id = request.form['table_id']
-        service_id = request.form['service_id']
-
-
-        # Fetch service and user descriptions from their respective tables
+        user_ids = request.form.getlist('user_ids')  # Retrieve multiple user IDs
+        
+        # Retrieve the service
         service = ServiceName.query.filter_by(service_name=service_name).first()
-        user = User.query.get(user_id)
-        table = Table.query.get(table_id)
 
-        # Check if service, user, and table exist
         if not service:
             flash('Service not found', 'error')
             return redirect(request.url)
-        if not user:
-            flash('User not found', 'error')
-            return redirect(request.url)
-        if not table:
-            flash('Table not found', 'error')
-            return redirect(request.url)
-
-        # Retrieve descriptions
-        service_description = service.service_description
-        user_description = user.user_description
 
         # Handle file upload
         if 'screenshot_path' not in request.files:
@@ -389,39 +382,40 @@ def create_screen_for_table():
             return redirect(request.url)
 
         if screenshot_file:
-            # Generate a timestamp
             timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-
-            # Get the file extension
             file_extension = screenshot_file.filename.split('.')[-1]
-
-            # Generate a unique filename with timestamp
             filename = f"{secure_filename(screenshot_file.filename)}_{timestamp}.{file_extension}"
-
-            # Save the file to the server with the unique filename
             screenshot_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             screenshot_file.save(screenshot_path)
         else:
             screenshot_path = None
 
-        # Save only the image file name to the database
+        # Create a new screen
         new_screen = Screen(
             screen_name=screen_name,
             screen_description=screen_description,
             screenshot_path=filename,
             service_id=service.id,
-            user_id=user_id,
-            user_description=user_description,
-            service_description=service_description,
-            table_id=table.id
-        )  # Save descriptions
+            table_id=table_id
+        )
+
+        # Add the selected users to the screen
+        for user_id in user_ids:
+            user = User.query.get(user_id)
+            if user:
+                new_screen.users.append(user)
 
         db.session.add(new_screen)
-        db.session.commit()  # Commit the transaction
+        db.session.commit()
 
+        flash('Screen added successfully', 'success')
         return redirect(f'/table/{table_id}')
     else:
-        return 'Method not allowed'
+        flash('Method not allowed', 'error')
+        return redirect('/')
+
+
+
 
 from flask import request
 
@@ -436,7 +430,12 @@ def edit_screen(screen_id):
         # Retrieve form data
         screen.screen_name = request.form['screen_name']
         screen.screen_description = request.form['screen_description']
-        screen.user_id = request.form['user_id']
+        # Retrieve selected user IDs as a list
+        selected_user_ids = request.form.getlist('user_ids')
+        # Convert the list of strings to integers
+        selected_user_ids = [int(user_id) for user_id in selected_user_ids]
+        # Update the association between screen and users
+        screen.users = User.query.filter(User.id.in_(selected_user_ids)).all()
         screen.service_id = request.form['service_id']
         
         db.session.commit()
