@@ -446,6 +446,23 @@ def edit_screen(screen_id):
         return redirect(f'/table/{screen.table_id}')
     
     return render_template('edit_screen.html', screen=screen, users=users, services=services)
+@app.route('/edit_user/<int:user_id>', methods=['GET', 'POST'])
+def edit_user(user_id):
+    user = User.query.get_or_404(user_id)
+    
+    if request.method == 'POST':
+        # Retrieve form data
+        user.username = request.form['username']
+        user.user_description = request.form['user_description']
+        
+        db.session.commit()
+        
+        flash('User details updated successfully', 'success')
+        
+        # Redirect back to the user list page
+        return redirect('/userlist')
+    
+    return render_template('edit_user.html', user=user)
 
 
 if __name__ == '__main__':

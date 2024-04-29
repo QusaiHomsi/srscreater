@@ -12,30 +12,34 @@
     <div class="alert alert-{{ category }}">{{ message }}</div>
     {% endfor %} {% endif %} {% endwith %}
 
-    <h1>المستخدمين</h1>
+    <!-- userlist.html -->
+
+    <h1>قائمة المستخدمين</h1>
     <table>
       <thead>
         <tr>
           <th>اسم المستخدم</th>
           <th>وصف المستخدم</th>
-          <th>حذف</th>
+          <th>تعديل</th>
+          <!-- Added column for Edit button -->
         </tr>
       </thead>
       <tbody>
         {% for user in users %}
         <tr>
           <td>{{ user.username }}</td>
-          <!-- Use the | safe filter to render HTML -->
           <td>{{ user.user_description | safe }}</td>
           <td>
-            <form action="/delete_user/{{ user.id }}" method="post">
-              <button type="submit">حذف المستخدم</button>
-            </form>
+            <a href="/edit_user/{{ user.id }}"
+              ><button>تعديل المستخدم</button></a
+            >
+            <!-- Edit button -->
           </td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
+
     <br /><br />
     <a href="/users"> <button class="screenspage">اضافة مستخدم جديد</button></a>
     <a href="/"> <button class="screenspage">الصفحة الرئيسية</button></a>
