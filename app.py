@@ -53,27 +53,6 @@ screen_user = db.Table('screen_user',
 with app.app_context():
     db.create_all()
 
-# Route to render the homepage template and pass data to it
-@app.route('/addscreens')
-def addscreens():
-    table_id = request.args.get('table_id')
-    # Fetch table details based on table_id
-    table = Table.query.get(table_id)
-    # Fetch other necessary data like services and users
-    services = ServiceName.query.all()
-    users = User.query.all()
-    # Pass the table_id, services, and users to the template
-    return render_template('addscreens.html', table_id=table_id, services=services, users=users)
-
-
-@app.route('/service/<service_name>')
-def get_service_description(service_name):
-    service = ServiceName.query.filter_by(service_name=service_name).first()
-    if service:
-        return jsonify({'service_description': service.service_description})
-    else:
-        return jsonify({'error': 'Service not found'}), 404
-
 
 @app.route('/add_user', methods=['POST'])
 def add_user():
@@ -156,6 +135,7 @@ def print(table_id):
 @app.route('/add_screen_to_table/wireframe.html')
 def wireframetool():
     return render_template('wireframe.html')
+
 @app.route('/new_table')
 def new_table_form():
     return render_template('new_table.html')
@@ -268,46 +248,7 @@ def delete_screen(screen_id):
     # Redirect to the table page associated with the deleted screen
     return redirect(f'/table/{table_id}')
 
-
-@app.route('/user/<int:user_id>')
-def get_user_description(user_id):
-    user = User.query.get(user_id)
-    if user:
-        return jsonify({'user_description': user.user_description}), 200
-    else:
-        return jsonify({'error': 'User not found'}), 404
     
-@app.route('/details/<int:screen_id>')
-def show_screen_details(screen_id):
-    screen = Screen.query.get(screen_id)
-    if screen:
-        return render_template('details.html', screen=screen)
-    else:
-        flash('Screen not found', 'error')
-        return redirect(url_for('display_screens'))
-    
-@app.route('/update_screen/<int:screen_id>', methods=['POST'])
-def update_screen(screen_id):
-    if request.method == 'POST':
-        # Retrieve the updated screen details from the form
-        screen = Screen.query.get(screen_id)
-        if screen:
-            screen.screen_name = request.form['screen_name']
-            screen.user_description = request.form['user_description']
-            screen.service_description = request.form['service_description']
-            
-            # Commit the changes to the database
-            db.session.commit()
-            
-            flash('Screen details updated successfully', 'success')
-        else:
-            flash('Screen not found', 'error')
-        
-        # Redirect the user back to the details page
-        return redirect(url_for('show_screen_details', screen_id=screen_id))
-    else:
-        # Handle invalid HTTP method
-        return 'Method not allowed', 405
 
 @app.route('/table/<int:table_id>')
 def table(table_id):
