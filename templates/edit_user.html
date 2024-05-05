@@ -18,9 +18,7 @@
     </style>
   </head>
   <body>
-    <h1 style="background-color: #002060; color: white">
-      تعديل بيانات المستخدم
-    </h1>
+    <h1 class="title">تعديل بيانات المستخدم</h1>
 
     <form action="" method="post">
       <label for="username">اسم المستخدم:</label><br />
@@ -40,8 +38,12 @@
     </form>
 
     <!-- Form for deleting the user -->
-    <form action="/delete_user/{{ user.id }}" method="post">
-      <button type="submit">حذف المستخدم</button>
+    <form
+      action="/delete_user/{{ user.id }}"
+      method="post"
+      onsubmit="return confirm('هل انت متاكد من الحذف ؟')"
+    >
+      <button class="delete" type="submit">حذف المستخدم</button>
     </form>
     <script>
       // Initialize TinyMCE

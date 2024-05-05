@@ -27,8 +27,12 @@
           <td>{{ service.service_name }}</td>
           <td>{{ service.service_description | safe }}</td>
           <td>
-            <form action="/delete_service/{{ service.id }}" method="post">
-              <button type="submit">حذف الخدمة</button>
+            <form
+              action="/delete_service/{{ service.id }}"
+              method="post"
+              onsubmit="return confirm('هل انت متاكد من الحذف ؟')"
+            >
+              <button class="delete" type="submit">حذف الخدمة</button>
             </form>
           </td>
         </tr>

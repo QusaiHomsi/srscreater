@@ -14,9 +14,9 @@
     />
     <br />
     <br />
-    <p class="title">وثيقة تحليل متطلبات الخدمات الإلكترونية</p>
-    <p class="title">أتمتة خدمات الهيئة البحرية</p>
-    <p class="title"> {{ table.table_name }}</p>
+    <p class="title_screen">وثيقة تحليل متطلبات الخدمات الإلكترونية</p>
+    <p class="title_screen">أتمتة خدمات الهيئة البحرية</p>
+    <p class="title_screen"> {{ table.table_name }}</p>
     <div class="author">
       <table class="author" >
         <tr></tr><th class="author">Author:<div class="author"><input class="print"></input></div></th></tr>
@@ -107,21 +107,19 @@
 
 <p style="color: black;">.يتم شرح جميع الأدوار بالتفصيل في كل مرحلة بالجدول الخاص بسير العمل</p>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-<p style="color: red;">قنوات تقديم الخدمة (Service Channels)
-</p>    
-<p>______________________________________________________________________________</p>
+<p style="color: red;">قنوات تقديم الخدمة (Service Channels)</p>
+<p>_______________________________</p>
 <ul>
-<li>بوابة الخدمات الإلكترونية</li>
-<li>تطبيق سند</li>
-<li>خدمة الجمهور في مبنى الهيئة البحرية </li>
+    {% for channel in table.channels %}
+    <li>{{ channel.channel_name }}</li>
+    {% endfor %}
 </ul>
-<p style="color: red;">المستفيد من الخدمة (Service Beneficiary)
-</p>
-<p>______________________________________________________________________________</p>
+<p style="color: red;">المستفيد من الخدمة (Service Beneficiary)</p>
+<p>_______________________________</p>
 <ul>
-  <li>أعمال (مؤسسات فردية \ شركات)</li>
-  <li>أفراد ( أردني\ غير أردني)
-  </li>
+    {% for beneficiary in table.beneficiaries %}
+    <li>{{ beneficiary.beneficiary_name }}</li>
+    {% endfor %}
 </ul>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
    <p style="color: red;">سيناريوهات المستخدم (User Stories) – شاشات متلقي الخدمة </p>
@@ -162,7 +160,7 @@
               method="post"
               onsubmit="return confirm('هل انت متاكد من حذف الشاشة؟')"
             >
-              <button type="submit">حذف الشاشة</button>
+              <button class="delete" type="submit">حذف الشاشة</button>
             </form>
           </td>
           <td>

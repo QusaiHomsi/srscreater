@@ -10,25 +10,60 @@
     </style>
   </head>
   <body>
-    <h1>جدول جديد</h1>
+    <h1>خدمة جديد</h1>
     <form action="/create_table" method="post">
       <table>
         <tr>
-          <th><label for="table_name">:اسم الجدول</label></th>
-          <td><input type="text" id="table_name" name="table_name" /></td>
+          <th><label for="table_name">اسم الخدمة: </label></th>
+          <td>
+            <input required type="text" id="table_name" name="table_name" />
+          </td>
         </tr>
         <tr>
-          <th><label for="table_description">:وصف الجدول</label></th>
+          <th><label for="table_description">وصف الخدمة:</label></th>
           <td>
             <textarea
               id="table_description"
               name="table_description"
+              required
             ></textarea>
           </td>
         </tr>
         <tr>
+          <th><label for="channels">القنوات:</label></th>
+          <td>
+            {% for channel in channels %}
+            <input
+              type="checkbox"
+              id="channel_{{ channel.id }}"
+              name="channels"
+              value="{{ channel.id }}"
+            />
+            <label for="channel_{{ channel.id }}"
+              >{{ channel.channel_name }}</label
+            ><br />
+            {% endfor %}
+          </td>
+        </tr>
+        <tr>
+          <th><label for="beneficiaries">المستفيدين:</label></th>
+          <td>
+            {% for beneficiary in beneficiaries %}
+            <input
+              type="checkbox"
+              id="beneficiary_{{ beneficiary.id }}"
+              name="beneficiaries"
+              value="{{ beneficiary.id }}"
+            />
+            <label for="beneficiary_{{ beneficiary.id }}"
+              >{{ beneficiary.beneficiary_name }}</label
+            ><br />
+            {% endfor %}
+          </td>
+        </tr>
+        <tr>
           <td colspan="2" style="text-align: center">
-            <input type="submit" value="اضافة" />
+            <input style="color: black" type="submit" value="اضافة" />
           </td>
         </tr>
       </table>

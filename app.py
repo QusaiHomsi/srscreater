@@ -24,7 +24,6 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), nullable=False)
     user_description = db.Column(db.Text, nullable=True)
-
     # Define many-to-many relationship with Screen model
     screens = db.relationship('Screen', secondary='screen_user', backref='users')
 
@@ -37,18 +36,43 @@ class Screen(db.Model):
     service_description = db.Column(db.Text, nullable=True)
     table_id = db.Column(db.Integer, db.ForeignKey('table.id'), nullable=True)
 
+
+
 class Table(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     table_name = db.Column(db.String(100), nullable=False)
     table_description = db.Column(db.Text, nullable=True)
     screens = db.relationship('Screen', backref='table', lazy=True)
 
-# Define association table for many-to-many relationship between Screen and User
+    # Define a many-to-many relationship with ServiceChannel
+    channels = db.relationship('ServiceChannel', secondary='table_channel', backref='tables')
+
+    # Define a many-to-many relationship with ServiceBeneficiary
+    beneficiaries = db.relationship('ServiceBeneficiary', secondary='table_beneficiary', backref='tables')
+
+# Define association table for many-to-many relationship between Table and ServiceChannel
+table_channel = db.Table('table_channel',
+    db.Column('table_id', db.Integer, db.ForeignKey('table.id'), primary_key=True),
+    db.Column('channel_id', db.Integer, db.ForeignKey('service_channel.id'), primary_key=True)
+)
+
+# Define association table for many-to-many relationship between Table and ServiceBeneficiary
+table_beneficiary = db.Table('table_beneficiary',
+    db.Column('table_id', db.Integer, db.ForeignKey('table.id'), primary_key=True),
+    db.Column('beneficiary_id', db.Integer, db.ForeignKey('service_beneficiary.id'), primary_key=True)
+)
+
 screen_user = db.Table('screen_user',
     db.Column('screen_id', db.Integer, db.ForeignKey('screen.id'), primary_key=True),
     db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True)
 )
+class ServiceChannel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    channel_name = db.Column(db.String(100), nullable=False)
 
+class ServiceBeneficiary(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    beneficiary_name = db.Column(db.String(100), nullable=False)
 # Create the database tables
 with app.app_context():
     db.create_all()
@@ -68,7 +92,7 @@ def add_user():
         db.session.add(new_user)
         db.session.commit()  # Commit the transaction
         
-        flash('User added successfully', 'success')
+       
         return redirect('/users')
     else:
         return 'Method not allowed'
@@ -87,7 +111,7 @@ def add_service():
         db.session.add(new_service)
         db.session.commit()  # Commit the transaction
         
-        flash('Service added successfully', 'success')
+     
         return redirect('/services')
     else:
         return 'Method not allowed'
@@ -138,13 +162,19 @@ def wireframetool():
 
 @app.route('/new_table')
 def new_table_form():
-    return render_template('new_table.html')
+    channels = ServiceChannel.query.all()
+    beneficiaries = ServiceBeneficiary.query.all()
+    return render_template('new_table.html', channels=channels, beneficiaries=beneficiaries)
+
+from flask import request
 
 @app.route('/create_table', methods=['POST'])
 def create_table():
     if request.method == 'POST':
         table_name = request.form['table_name']
         table_description = request.form['table_description']
+        channels_selected = request.form.getlist('channels')  # Retrieve selected channels
+        beneficiaries_selected = request.form.getlist('beneficiaries')  # Retrieve selected beneficiaries
         
         # Create a new table object
         new_table = Table(table_name=table_name, table_description=table_description)
@@ -153,8 +183,29 @@ def create_table():
         db.session.add(new_table)
         db.session.commit()
         
-        # Redirect the user to the tables page
+        # Associate selected channels with the new table
+        for channel_id in channels_selected:
+            channel = ServiceChannel.query.get(channel_id)
+            if channel:
+                new_table.channels.append(channel)
+        
+        # Associate selected beneficiaries with the new table
+        for beneficiary_id in beneficiaries_selected:
+            beneficiary = ServiceBeneficiary.query.get(beneficiary_id)
+            if beneficiary:
+                new_table.beneficiaries.append(beneficiary)
+        
+        # Commit the transaction
+        db.session.commit()
+        
+     
         return redirect('/')
+    else:
+        return 'Method not allowed'
+
+
+
+
 @app.route('/users')
 def users():
     # Fetch data from the database
@@ -221,7 +272,6 @@ def delete_service(service_id):
     db.session.delete(service)
     db.session.commit()
 
-    flash('Service deleted successfully', 'success')
     return redirect('/servicelist')
 
 @app.route('/delete_screen/<int:screen_id>', methods=['POST'])
@@ -243,7 +293,7 @@ def delete_screen(screen_id):
     db.session.delete(screen)
     db.session.commit()
 
-    flash('Screen deleted successfully', 'success')
+    
     
     # Redirect to the table page associated with the deleted screen
     return redirect(f'/table/{table_id}')
@@ -289,7 +339,7 @@ def delete_table(table_id):
     db.session.delete(table)
     db.session.commit()
 
-    flash('Table and associated screens deleted successfully', 'success')
+   
     return redirect('/')
 
 
@@ -309,17 +359,17 @@ def create_screen_for_table():
         service = ServiceName.query.filter_by(service_name=service_name).first()
 
         if not service:
-            flash('Service not found', 'error')
+            
             return redirect(request.url)
 
         # Handle file upload
         if 'screenshot_path' not in request.files:
-            flash('No file part', 'error')
+            
             return redirect(request.url)
 
         screenshot_file = request.files['screenshot_path']
         if screenshot_file.filename == '':
-            flash('No selected file', 'error')
+           
             return redirect(request.url)
 
         if screenshot_file:
@@ -349,10 +399,10 @@ def create_screen_for_table():
         db.session.add(new_screen)
         db.session.commit()
 
-        flash('Screen added successfully', 'success')
+      
         return redirect(f'/table/{table_id}')
     else:
-        flash('Method not allowed', 'error')
+     
         return redirect('/')
 
 
@@ -381,7 +431,7 @@ def edit_screen(screen_id):
         
         db.session.commit()
         
-        flash('Screen details updated successfully', 'success')
+      
         
         # Redirect back to the table page associated with the screen
         return redirect(f'/table/{screen.table_id}')
@@ -398,12 +448,93 @@ def edit_user(user_id):
         
         db.session.commit()
         
-        flash('User details updated successfully', 'success')
+      
         
         # Redirect back to the user list page
         return redirect('/userlist')
     
     return render_template('edit_user.html', user=user)
+@app.route('/add_service_channel', methods=['POST'])
+def add_service_channel():
+    if request.method == 'POST':
+        channel_name = request.form['channel_name']
+        
+        # Create a new service channel object
+        new_channel = ServiceChannel(channel_name=channel_name)
+        
+        # Add the new channel to the database
+        db.session.add(new_channel)
+        db.session.commit()
+        
+        
+        return redirect('/')
+    else:
+        return 'Method not allowed'
+
+# Method to add a new service beneficiary
+@app.route('/add_service_beneficiary', methods=['POST'])
+def add_service_beneficiary():
+    if request.method == 'POST':
+        beneficiary_name = request.form['beneficiary_name']
+        
+        # Create a new service beneficiary object
+        new_beneficiary = ServiceBeneficiary(beneficiary_name=beneficiary_name)
+        
+        # Add the new beneficiary to the database
+        db.session.add(new_beneficiary)
+        db.session.commit()
+        
+        
+        return redirect('/add_service_beneficiary_form')
+    else:
+        return 'Method not allowed'
+@app.route('/add_service_channel_form', methods=['GET'])
+def add_service_channel_form():
+    return render_template('service_channel_form.html')
+
+@app.route('/add_service_beneficiary_form', methods=['GET'])
+def add_service_beneficiary_form():
+    return render_template('service_beneficiary_form.html')
+@app.route('/channels')
+def show_all_channels():
+    channels = ServiceChannel.query.all()
+    return render_template('channels.html', channels=channels)
+
+# Route to handle the deletion of a channel
+@app.route('/delete_channel/<int:channel_id>', methods=['POST'])
+def delete_channel(channel_id):
+    channel = ServiceChannel.query.get_or_404(channel_id)
+    try:
+        db.session.delete(channel)
+        db.session.commit()
+       
+    except:
+        db.session.rollback()
+        
+    finally:
+        db.session.close()
+    return redirect(url_for('show_all_channels'))
+# Route to render the HTML page showing all beneficiaries
+@app.route('/beneficiaries')
+def show_all_beneficiaries():
+    beneficiaries = ServiceBeneficiary.query.all()
+    return render_template('beneficiaries.html', beneficiaries=beneficiaries)
+
+# Route to handle the deletion of a beneficiary
+@app.route('/delete_beneficiary/<int:beneficiary_id>', methods=['POST'])
+def delete_beneficiary(beneficiary_id):
+    beneficiary = ServiceBeneficiary.query.get_or_404(beneficiary_id)
+    try:
+        db.session.delete(beneficiary)
+        db.session.commit()
+       
+    except:
+        db.session.rollback()
+       
+    finally:
+        db.session.close()
+    return redirect(url_for('show_all_beneficiaries'))
+
 
 
 if __name__ == '__main__':

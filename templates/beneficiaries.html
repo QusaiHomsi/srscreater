@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="../static/table.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>All Beneficiaries</title>
+  </head>
+  <body>
+    <h1 class="title">قائمة جميع المستفيدين</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>اسم المستفيد</th>
+          <th>حذف</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for beneficiary in beneficiaries %}
+        <tr>
+          <td>{{ beneficiary.beneficiary_name }}</td>
+          <td>
+            <form
+              action="/delete_beneficiary/{{ beneficiary.id }}"
+              method="post"
+              onsubmit="return confirm('هل انت متاكد من الحذف ؟')"
+            >
+              <button class="delete" type="submit">حذف</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div>
+      <a href="/add_service_beneficiary_form">
+        <button class="screenspage">اضافة مستفيد</button></a
+      >
+    </div>
+    <div>
+      <a href="/"> <button class="screenspage">الصفحة الرئيسة</button></a>
+    </div>
+  </body>
+</html>

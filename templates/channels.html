@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="../static/table.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>All Channels</title>
+  </head>
+  <body>
+    <h1 class="title">قنوات تقديم الخدمة (Service Channels)</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>اسم القناة</th>
+          <th>حذف</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for channel in channels %}
+        <tr>
+          <td>{{ channel.channel_name }}</td>
+          <td>
+            <form
+              action="/delete_channel/{{ channel.id }}"
+              method="post"
+              onsubmit="return confirm('هل انت متاكد من الحذف ؟')"
+            >
+              <button class="delete" type="submit">حذف</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <a href="/add_service_channel_form"><button>اضافة قناة</button></a>
+    <div>
+      <a href="/"> <button class="screenspage">الصفحة الرئيسة</button></a>
+    </div>
+  </body>
+</html>

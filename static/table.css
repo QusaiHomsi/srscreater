@@ -47,9 +47,13 @@ button:hover {
   width: 100px; /* Adjust the width of the logo */
   height: auto; /* Automatically adjust height while maintaining aspect ratio */
 }
-.title {
+.title_screen {
   font-size: 36px;
   color: #002060;
+}
+.title {
+  background-color: #002060;
+  color: white;
 }
 .author {
   text-align: left; /* Align text to the right */
@@ -122,4 +126,20 @@ ul {
 }
 table {
   direction: rtl;
+}
+.delete {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.delete:hover {
+  background-color: #d32f2f;
 }

@@ -1,0 +1,29 @@
+<!-- service_beneficiaries_form.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="../static/table.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Service Beneficiary</title>
+  </head>
+  <body>
+    <h1 class="title">اضافة مستفيد</h1>
+    <form action="/add_service_beneficiary" method="post">
+      <label for="beneficiary_name">اسم المستفيد:</label>
+      <input
+        type="text"
+        id="beneficiary_name"
+        name="beneficiary_name"
+        required
+      /><br /><br />
+      <input type="submit" value="اضافة مستفيد" />
+    </form>
+    <div>
+      <a href="/beneficiaries"><button>قائمة المستفيدين من الخدمة</button></a>
+    </div>
+    <div>
+      <a href="/"> <button class="screenspage">الصفحة الرئيسة</button></a>
+    </div>
+  </body>
+</html>

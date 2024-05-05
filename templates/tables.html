@@ -7,7 +7,7 @@
     <title>Tables</title>
   </head>
   <body>
-    <h1>الخدمات</h1>
+    <h1 class="title">الخدمات</h1>
     <table>
       <thead>
         <tr>
@@ -27,7 +27,7 @@
               method="post"
               onsubmit="return confirm('هل انت متاكد من حذف الجدول و جميع الشاشات داخله؟')"
             >
-              <button type="submit">حذف الخدمة و الشاشات</button>
+              <button class="delete" type="submit">حذف الخدمة و الشاشات</button>
             </form>
           </td>
         </tr>
@@ -45,6 +45,12 @@
       <a href="/servicelist">
         <button class="screenspage">قائمة الخدمات</button></a
       >
+      <a href="/channels">
+        <button class="screenspage">قائمة قنوات تقديم الخدمة</button></a
+      >
+
+      <!-- Button to access the form for adding service beneficiaries -->
+      <a href="/beneficiaries"><button>قائمة المستفيدين من الخدمة</button></a>
     </div>
   </body>
 </html>
