@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <link rel="stylesheet" href="../static/table.css" />
+    <link rel="stylesheet" href="../static/navbar.css" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Add User</title>
@@ -24,7 +25,7 @@
       });
     </script>
   </head>
-  <body>
+  {% include 'navbar.html' %}
     <h1>اضافة مستخدم</h1>
     <table>
       <form action="/add_user" method="post">
@@ -47,23 +48,5 @@
         </tr>
       </form>
     </table>
-
-    <div>
-      <div></div>
-      <a href="/services">
-        <button class="screenspage">اضافة خدمة جديدة</button>
-      </a>
-    </div>
-    <div>
-      <a href="/userlist">
-        <button class="screenspage">قائمة المستخدمين</button>
-      </a>
-      <a href="/servicelist">
-        <button class="screenspage">قائمة الخدمات</button>
-      </a>
-    </div>
-    <a href="/">
-      <button class="screenspage">الصفحة الرئيسية</button>
-    </a>
   </body>
 </html>

@@ -1,18 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
     <link rel="stylesheet" href="../static/table.css" />
+    <link rel="stylesheet" href="../static/navbar.css" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tables</title>
   </head>
   <body>
+    {% include 'navbar.html' %}
+
     <h1 class="title">الخدمات</h1>
     <table>
       <thead>
         <tr>
           <th>اسم الخدمة</th>
           <th>وصف الخدمة</th>
+          <th>تفاصيل الخدمة</th>
           <th>حذف الخدمة</th>
         </tr>
       </thead>
@@ -20,7 +28,10 @@
         {% for table in tables %}
         <tr>
           <td><a href="/table/{{ table.id }}">{{ table.table_name }}</a></td>
-          <td><p>{{ table.table_description }}</p></td>
+          <td><p>{{ table.table_description |safe}}</p></td>
+          <td>
+            <a a href="/table_info/{{ table.id }}"><button>تفاصيل</button></a>
+          </td>
           <td>
             <form
               action="/delete_table/{{ table.id }}"
@@ -34,23 +45,21 @@
         {% endfor %}
       </tbody>
     </table>
-    <div>
-      <a href="/new_table"><button>اضافة خدمة</button></a>
-    </div>
 
-    <div>
+    <!--
+       <div>
       <a href="/userlist">
         <button class="screenspage">قائمة المستخدمين</button></a
       >
-      <a href="/servicelist">
+       <a href="/servicelist">
         <button class="screenspage">قائمة الخدمات</button></a
-      >
+      > 
       <a href="/channels">
         <button class="screenspage">قائمة قنوات تقديم الخدمة</button></a
       >
 
-      <!-- Button to access the form for adding service beneficiaries -->
+      
       <a href="/beneficiaries"><button>قائمة المستفيدين من الخدمة</button></a>
-    </div>
+    </div> -->
   </body>
 </html>

@@ -11,14 +11,7 @@ app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static','uploads')
 app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['CKEDITOR_SERVE_LOCAL'] = True
 
-
 db = SQLAlchemy(app)
-
-class ServiceName(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    service_name = db.Column(db.String(100), nullable=False)
-    service_description = db.Column(db.Text, nullable=True)
-    screens = db.relationship('Screen', backref='service', lazy=True)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -32,8 +25,6 @@ class Screen(db.Model):
     screen_name = db.Column(db.String(100), nullable=False)
     screen_description = db.Column(db.Text, nullable=True)
     screenshot_path = db.Column(db.String(255), nullable=True)
-    service_id = db.Column(db.Integer, db.ForeignKey('service_name.id'), nullable=False)
-    service_description = db.Column(db.Text, nullable=True)
     table_id = db.Column(db.Integer, db.ForeignKey('table.id'), nullable=True)
 
 
@@ -42,6 +33,27 @@ class Table(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     table_name = db.Column(db.String(100), nullable=False)
     table_description = db.Column(db.Text, nullable=True)
+    sector_class = db.Column(db.Text, nullable=True)
+    service_place = db.Column(db.Text, nullable=True)
+    service_structure = db.Column(db.Text, nullable=True)
+    service_type = db.Column(db.Text, nullable=True)
+    service_class = db.Column(db.Text, nullable=True)
+    fees = db.Column(db.Text, nullable=True)
+    fees_description = db.Column(db.Text, nullable=True)
+    fees_amount = db.Column(db.Integer, nullable=True)
+    fees_payment = db.Column(db.Text, nullable=True)
+    general_rules = db.Column(db.Text, nullable=True)
+    customer_category = db.Column(db.Text, nullable=True)
+    document_name = db.Column(db.Text, nullable=True)
+    document_type = db.Column(db.Text, nullable=True)
+    document_description = db.Column(db.Text, nullable=True)
+    document_rules = db.Column(db.Text, nullable=True)
+    document_origin = db.Column(db.Text, nullable=True) 
+    outputs_name = db.Column(db.Text, nullable=True)
+    outputs_type = db.Column(db.Text, nullable=True)
+    outputs_description = db.Column(db.Text, nullable=True)  
+    outputs_rules = db.Column(db.Text, nullable=True) 
+    outputs_expiry = db.Column(db.Text, nullable=True)
     screens = db.relationship('Screen', backref='table', lazy=True)
 
     # Define a many-to-many relationship with ServiceChannel
@@ -49,6 +61,7 @@ class Table(db.Model):
 
     # Define a many-to-many relationship with ServiceBeneficiary
     beneficiaries = db.relationship('ServiceBeneficiary', secondary='table_beneficiary', backref='tables')
+
 
 # Define association table for many-to-many relationship between Table and ServiceChannel
 table_channel = db.Table('table_channel',
@@ -103,15 +116,6 @@ def add_service():
         # Retrieve data from the form fields
         service_name = request.form['service_name']
         service_description = request.form['service_description']
-        
-        # Create a new service object
-        new_service = ServiceName(service_name=service_name, service_description=service_description)
-        
-        # Add the new service to the database
-        db.session.add(new_service)
-        db.session.commit()  # Commit the transaction
-        
-     
         return redirect('/services')
     else:
         return 'Method not allowed'
@@ -135,10 +139,7 @@ def table_details(table_id):
     if table.screens:
         # If there are screens associated with the table, get the service name from the first screen
         screen = table.screens[0]
-        service_name = screen.service.service_name
-        # Fetch service description based on service name
-        service_description = ServiceName.query.filter_by(service_name=service_name).first().service_description
-
+       
     return render_template('table_details.html', table=table, users=users,  service_name=service_name, service_description=service_description)
 @app.route('/print/<int:table_id>')
 def print(table_id):
@@ -146,11 +147,9 @@ def print(table_id):
     service_name = None
     service_description = None
     if table.screens:
-        # If there are screens associated with the table, get the service name from the first screen
+        
         screen = table.screens[0]
-        service_name = screen.service.service_name
-        # Fetch service description based on service name
-        service_description = ServiceName.query.filter_by(service_name=service_name).first().service_description
+        
         users = User.query.all()
     return render_template('print.html', table=table, service_name=service_name, service_description=service_description,users=users)
 
@@ -170,38 +169,65 @@ from flask import request
 
 @app.route('/create_table', methods=['POST'])
 def create_table():
-    if request.method == 'POST':
-        table_name = request.form['table_name']
-        table_description = request.form['table_description']
-        channels_selected = request.form.getlist('channels')  # Retrieve selected channels
-        beneficiaries_selected = request.form.getlist('beneficiaries')  # Retrieve selected beneficiaries
-        
-        # Create a new table object
-        new_table = Table(table_name=table_name, table_description=table_description)
-        
-        # Add the new table to the database
-        db.session.add(new_table)
-        db.session.commit()
-        
-        # Associate selected channels with the new table
-        for channel_id in channels_selected:
-            channel = ServiceChannel.query.get(channel_id)
-            if channel:
-                new_table.channels.append(channel)
-        
-        # Associate selected beneficiaries with the new table
-        for beneficiary_id in beneficiaries_selected:
-            beneficiary = ServiceBeneficiary.query.get(beneficiary_id)
-            if beneficiary:
-                new_table.beneficiaries.append(beneficiary)
-        
-        # Commit the transaction
-        db.session.commit()
-        
-     
-        return redirect('/')
-    else:
-        return 'Method not allowed'
+    table_name = request.form['table_name']
+    table_description = request.form['table_description']
+    sector_class = request.form['sector_class']
+    service_type = request.form.get('service_type')  # Retrieve service type
+    service_place = request.form.get('service_place')  # Retrieve service place
+    service_structure = request.form.get('service_structure')  # Retrieve service structure
+    service_class = request.form.get('service_class')  # Retrieve service class
+    fees = request.form.get('fees')  # Retrieve fees
+    fees_description = request.form.get('fees_description')  # Retrieve fees description
+    fees_amount = request.form.get('fees_amount')  # Retrieve fees amount
+    fees_payment = request.form.get('fees_payment')  # Retrieve fees payment
+    general_rules = request.form.get('general_rules')  # Retrieve general rules
+    customer_category = request.form.get('customer_category')  # Retrieve customer category
+    document_name = request.form.get('document_name')  # Retrieve document name
+    document_type = request.form.get('document_type')  # Retrieve document type
+    document_description = request.form.get('document_description')  # Retrieve document description
+    document_rules = request.form.get('document_rules')  # Retrieve document rules
+    document_origin = request.form.get('document_origin')  # Retrieve document origin
+    outputs_name = request.form.get('outputs_name')  # Retrieve outputs name
+    outputs_type = request.form.get('outputs_type')  # Retrieve outputs type
+    outputs_description = request.form.get('outputs_description')  # Retrieve outputs description
+    outputs_rules = request.form.get('outputs_rules')  # Retrieve outputs rules
+    outputs_expiry = request.form.get('outputs_expiry')  # Retrieve outputs expiry
+    channels_selected = request.form.getlist('channels')  # Retrieve selected channels
+    beneficiaries_selected = request.form.getlist('beneficiaries')  # Retrieve selected beneficiaries
+    
+    new_table = Table(table_name=table_name, table_description=table_description, sector_class=sector_class,
+                      service_type=service_type, service_place=service_place, service_structure=service_structure,
+                      service_class=service_class, fees=fees, fees_description=fees_description,
+                      fees_amount=fees_amount, fees_payment=fees_payment, general_rules=general_rules,
+                      customer_category=customer_category, document_name=document_name,
+                      document_type=document_type, document_description=document_description,
+                      document_rules=document_rules, document_origin=document_origin,
+                      outputs_name=outputs_name, outputs_type=outputs_type,
+                      outputs_description=outputs_description, outputs_rules=outputs_rules,
+                      outputs_expiry=outputs_expiry)
+    
+    # Add the new table to the database
+    db.session.add(new_table)
+    db.session.commit()
+    
+    # Associate selected channels with the new table
+    for channel_id in channels_selected:
+        channel = ServiceChannel.query.get(channel_id)
+        if channel:
+            new_table.channels.append(channel)
+    
+    # Associate selected beneficiaries with the new table
+    for beneficiary_id in beneficiaries_selected:
+        beneficiary = ServiceBeneficiary.query.get(beneficiary_id)
+        if beneficiary:
+            new_table.beneficiaries.append(beneficiary)
+    
+    # Commit the transaction
+    db.session.commit()
+    
+    # Redirect to the homepage
+    return redirect('/')
+
 
 
 
@@ -209,39 +235,21 @@ def create_table():
 @app.route('/users')
 def users():
     # Fetch data from the database
-    services = ServiceName.query.all()
     users = User.query.all()
-    
     # Render the template and pass the data to it
-    return render_template('users.html', services=services, users=users)
+    return render_template('users.html', users=users)
 
 
-@app.route('/services')
-def services():
-    # Fetch data from the database
-    services = ServiceName.query.all()
-    users = User.query.all()
-    
-    # Render the template and pass the data to it
-    return render_template('services.html', services=services, users=users)
+
 
 @app.route('/userlist')
 def userlist():
     # Fetch data from the database
-    services = ServiceName.query.all()
+    # services = ServiceName.query.all()
     users = User.query.all()
     
     # Render the template and pass the data to it
-    return render_template('userlist.html', services=services, users=users)
-@app.route('/servicelist')
-def servicelist():
-    # Fetch data from the database
-    services = ServiceName.query.all()
-    users = User.query.all()
-    
-    # Render the template and pass the data to it
-    return render_template('servicelist.html', services=services, users=users)
-from flask import flash
+    return render_template('userlist.html', users=users)
 
 @app.route('/delete_user/<int:user_id>', methods=['POST'])
 def delete_user(user_id):
@@ -259,20 +267,6 @@ def delete_user(user_id):
     flash('User deleted successfully', 'success')
     return redirect('/userlist')
 
-@app.route('/delete_service/<int:service_id>', methods=['POST'])
-def delete_service(service_id):
-    service = ServiceName.query.get_or_404(service_id)
-    
-    # Check if the service has associated screens
-    if service.screens:
-        flash('الخدمة مستعملة داخل شاشة في احد الجداول لا يمكن حذفها', 'error')
-        return redirect('/servicelist')
-    
-    # Delete the service from the database
-    db.session.delete(service)
-    db.session.commit()
-
-    return redirect('/servicelist')
 
 @app.route('/delete_screen/<int:screen_id>', methods=['POST'])
 def delete_screen(screen_id):
@@ -315,8 +309,8 @@ def table(table_id):
 @app.route('/add_screen_to_table/<int:table_id>')
 def add_screen_to_table_form(table_id):
     users = User.query.all()
-    services = ServiceName.query.all()
-    return render_template('add_screen_to_table.html', table_id=table_id, users=users, services=services)
+   
+    return render_template('add_screen_to_table.html', table_id=table_id, users=users)
 
 @app.route('/delete_table/<int:table_id>', methods=['POST'])
 def delete_table(table_id):
@@ -351,17 +345,10 @@ def create_screen_for_table():
         # Retrieve form data
         screen_name = request.form['screen_name']
         screen_description = request.form['screen_description']
-        service_name = request.form['service_name']
+      
         table_id = request.form['table_id']
         user_ids = request.form.getlist('user_ids')  # Retrieve multiple user IDs
         
-        # Retrieve the service
-        service = ServiceName.query.filter_by(service_name=service_name).first()
-
-        if not service:
-            
-            return redirect(request.url)
-
         # Handle file upload
         if 'screenshot_path' not in request.files:
             
@@ -386,7 +373,6 @@ def create_screen_for_table():
             screen_name=screen_name,
             screen_description=screen_description,
             screenshot_path=filename,
-            service_id=service.id,
             table_id=table_id
         )
 
@@ -400,6 +386,7 @@ def create_screen_for_table():
         db.session.commit()
 
       
+        
         return redirect(f'/table/{table_id}')
     else:
      
@@ -415,7 +402,6 @@ from flask import request
 def edit_screen(screen_id):
     screen = Screen.query.get_or_404(screen_id)
     users = User.query.all()
-    services = ServiceName.query.all()
     
     if request.method == 'POST':
         # Retrieve form data
@@ -427,16 +413,13 @@ def edit_screen(screen_id):
         selected_user_ids = [int(user_id) for user_id in selected_user_ids]
         # Update the association between screen and users
         screen.users = User.query.filter(User.id.in_(selected_user_ids)).all()
-        screen.service_id = request.form['service_id']
-        
+    
         db.session.commit()
-        
-      
         
         # Redirect back to the table page associated with the screen
         return redirect(f'/table/{screen.table_id}')
     
-    return render_template('edit_screen.html', screen=screen, users=users, services=services)
+    return render_template('edit_screen.html', screen=screen, users=users)
 @app.route('/edit_user/<int:user_id>', methods=['GET', 'POST'])
 def edit_user(user_id):
     user = User.query.get_or_404(user_id)
@@ -467,7 +450,7 @@ def add_service_channel():
         db.session.commit()
         
         
-        return redirect('/')
+        return redirect('/add_service_channel_form')
     else:
         return 'Method not allowed'
 
@@ -530,12 +513,49 @@ def delete_beneficiary(beneficiary_id):
        
     except:
         db.session.rollback()
-       
+        
     finally:
         db.session.close()
     return redirect(url_for('show_all_beneficiaries'))
+@app.route('/table_info/<int:table_id>')
+def table_info(table_id):
+    # Query the database to fetch the data for the specified table_id
+    table = Table.query.get(table_id)
+    
+    # Render the template and pass the data to it
+    return render_template('table_info.html', table=table)
 
-
+@app.route('/update_table_info/<int:table_id>', methods=['POST'])
+def update_table_info(table_id):
+    table = Table.query.get_or_404(table_id)
+    table.table_name = request.form['table_name']
+    table.sector_class = request.form['sector_class']
+    table.service_place = request.form['service_place']
+    table.service_structure = request.form['service_structure']
+    table.service_type = request.form['service_type']
+    table.service_class = request.form['service_class']
+    table.fees = request.form['fees']
+    table.fees_description = request.form['fees_description']
+    table.fees_amount = request.form['fees_amount']
+    table.fees_payment = request.form['fees_payment']
+    table.general_rules = request.form['general_rules']
+    table.customer_category = request.form['customer_category']
+    table.document_name = request.form['document_name']
+    table.document_type = request.form['document_type']
+    table.document_description = request.form['document_description']
+    table.document_rules = request.form['document_rules']
+    table.document_origin = request.form['document_origin']
+    table.outputs_name = request.form['outputs_name']
+    table.outputs_type = request.form['outputs_type']
+    table.outputs_description = request.form['outputs_description']
+    table.outputs_rules = request.form['outputs_rules']
+    table.outputs_expiry = request.form['outputs_expiry']
+    
+    db.session.commit()
+    return redirect(url_for('table_info', table_id=table_id))
+@app.route('/wireframe.html')
+def show_wireframe():
+    return render_template('wireframe.html')    
 
 if __name__ == '__main__':
     app.run(debug=True)

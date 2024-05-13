@@ -2,11 +2,13 @@
 <html lang="en">
   <head>
     <link rel="stylesheet" href="../static/table.css" />
+    <link rel="stylesheet" href="../static/navbar.css" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>All Channels</title>
   </head>
   <body>
+    {% include 'navbar.html' %}
     <h1 class="title">قنوات تقديم الخدمة (Service Channels)</h1>
     <table>
       <thead>
@@ -32,9 +34,5 @@
         {% endfor %}
       </tbody>
     </table>
-    <a href="/add_service_channel_form"><button>اضافة قناة</button></a>
-    <div>
-      <a href="/"> <button class="screenspage">الصفحة الرئيسة</button></a>
-    </div>
   </body>
 </html>

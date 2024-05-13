@@ -6,6 +6,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
     />
     <link rel="stylesheet" href="../static/addscreen.css" />
+    <link rel="stylesheet" href="../static/navbar.css" />
     <script
       src="https://cdn.tiny.cloud/1/z69tp80jmlesld65z70s45ymnhqlcnp4ec0dsvrxc8tsiyxb/tinymce/5/tinymce.min.js"
       referrerpolicy="origin"
@@ -27,6 +28,7 @@
     </style>
   </head>
   <body>
+    {% include 'navbar.html' %}
     <form
       id="addScreenForm"
       action="/create_screen_for_table"
@@ -55,20 +57,19 @@
         </div>
         <br /><br />
         <div>
-          <select
+          <!--  <select
             class="classic"
             name="service_name"
             style="width: auto"
             required
           >
-            <option value="">اختر خدمة</option>
+           <option value="">اختر خدمة</option>
             {% for service in services %}
             <option value="{{ service.service_name }}">
               {{ service.service_name }}
             </option>
             {% endfor %}
-          </select>
-          <br /><br />
+          </select> -->
         </div>
         <table>
           <thead>
@@ -118,16 +119,20 @@
         <button type="button" id="submitBtn">اضافة</button>
       </div>
     </form>
-    <a href="/"> <button class="screenspage">الصفحة الرئيسية</button></a>
-    <div>
-      <a href="./wireframe.html"><button>Wireframe Tool</button></a>
-    </div>
+
+    <script
+      src="https://cdn.tiny.cloud/1/z69tp80jmlesld65z70s45ymnhqlcnp4ec0dsvrxc8tsiyxb/tinymce/5/tinymce.min.js"
+      referrerpolicy="origin"
+    ></script>
     <script>
+      let unsavedChanges = false;
+      let formSubmitted = false; // Flag to indicate if the form is being submitted intentionally
+
       // Initialize TinyMCE
       tinymce.init({
         selector: "textarea#screen_description",
-        height: 200, // Set the height of the editor
-        language: "ar", // Set the language to Arabic
+        height: 200,
+        language: "ar",
         plugins: [
           "advlist autolink lists link image charmap print preview anchor",
           "searchreplace visualblocks code fullscreen",
@@ -135,8 +140,13 @@
         ],
         toolbar:
           "undo redo | formatselect | bold italic backcolor forecolor| \
-               alignleft aligncenter alignright alignjustify | \
-               bullist numlist outdent indent | removeformat | help",
+              alignleft aligncenter alignright alignjustify | \
+              bullist numlist outdent indent | removeformat | help",
+        setup: function (editor) {
+          editor.on("change", function () {
+            unsavedChanges = true;
+          });
+        },
       });
 
       // Function to display the uploaded filename
@@ -145,10 +155,20 @@
         document.getElementById("uploadedFilename").textContent = fileName;
       }
 
+      // Listen for beforeunload event
+      window.addEventListener("beforeunload", function (e) {
+        if (unsavedChanges && !formSubmitted) {
+          e.preventDefault();
+          e.returnValue = "";
+          return "هل أنت متأكد أنك تريد مغادرة الصفحة؟ قد تفقد التغييرات التي قمت بها.";
+        }
+      });
+
       // Submit form when the submit button is clicked
       document
         .getElementById("submitBtn")
         .addEventListener("click", function () {
+          formSubmitted = true;
           document.getElementById("addScreenForm").submit();
         });
     </script>

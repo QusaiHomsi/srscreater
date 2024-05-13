@@ -3,11 +3,13 @@
 <html lang="en">
   <head>
     <link rel="stylesheet" href="../static/table.css" />
+    <link rel="stylesheet" href="../static/navbar.css" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Add Service Channel</title>
   </head>
   <body>
+    {% include 'navbar.html' %}
     <h1 class="title">اضافة قناة</h1>
     <form action="/add_service_channel" method="post">
       <label for="channel_name">اسم القناة:</label>
@@ -19,11 +21,5 @@
       /><br /><br />
       <input type="submit" value="اضافة" />
     </form>
-    <div>
-      <a href="/channels"><button>قائمة قنوات الخدمة</button></a>
-    </div>
-    <div>
-      <a href="/"> <button class="screenspage">الصفحة الرئيسة</button></a>
-    </div>
   </body>
 </html>

@@ -2,13 +2,15 @@
 <html lang="en">
   <head>
     <link rel="stylesheet" href="../static/table.css" />
+    <link rel="stylesheet" href="../static/navbar.css" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>List</title>
   </head>
   <body>
-    {% with messages = get_flashed_messages(with_categories=true) %} {% if
-    messages %} {% for category, message in messages %}
+    {% include 'navbar.html' %} {% with messages =
+    get_flashed_messages(with_categories=true) %} {% if messages %} {% for
+    category, message in messages %}
     <div class="alert alert-{{ category }}">{{ message }}</div>
     {% endfor %} {% endif %} {% endwith %}
 
@@ -41,7 +43,5 @@
     </table>
 
     <br /><br />
-    <a href="/users"> <button class="screenspage">اضافة مستخدم جديد</button></a>
-    <a href="/"> <button class="screenspage">الصفحة الرئيسية</button></a>
   </body>
 </html>

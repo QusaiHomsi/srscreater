@@ -1,0 +1,145 @@
+/*
+     * Droid Arabic Kufi (Arabic) https://www.google.com/fonts/earlyaccess
+     */
+@font-face {
+  font-family: "Droid Arabic Kufi";
+  font-style: normal;
+  font-weight: 400;
+  src: url(//fonts.gstatic.com/ea/droidarabickufi/v6/DroidKufi-Regular.eot);
+  src: url(//fonts.gstatic.com/ea/droidarabickufi/v6/DroidKufi-Regular.eot?#iefix)
+      format("embedded-opentype"),
+    url(//fonts.gstatic.com/ea/droidarabickufi/v6/DroidKufi-Regular.woff2)
+      format("woff2"),
+    url(//fonts.gstatic.com/ea/droidarabickufi/v6/DroidKufi-Regular.woff)
+      format("woff"),
+    url(//fonts.gstatic.com/ea/droidarabickufi/v6/DroidKufi-Regular.ttf)
+      format("truetype");
+}
+@font-face {
+  font-family: "Droid Arabic Kufi";
+  font-style: normal;
+  font-weight: 700;
+  src: url(//fonts.gstatic.com/ea/droidarabickufi/v6/DroidKufi-Bold.eot);
+  src: url(//fonts.gstatic.com/ea/droidarabickufi/v6/DroidKufi-Bold.eot?#iefix)
+      format("embedded-opentype"),
+    url(//fonts.gstatic.com/ea/droidarabickufi/v6/DroidKufi-Bold.woff2)
+      format("woff2"),
+    url(//fonts.gstatic.com/ea/droidarabickufi/v6/DroidKufi-Bold.woff)
+      format("woff"),
+    url(//fonts.gstatic.com/ea/droidarabickufi/v6/DroidKufi-Bold.ttf)
+      format("truetype");
+}
+
+body {
+  direction: rtl;
+  font-family: "Droid Arabic Kufi";
+  height: 1000px;
+}
+
+h1 {
+  margin: 50px;
+  font-size: 24px;
+  color: #1b1f20;
+  font-weight: 600;
+}
+span {
+  display: block;
+  margin: 20px;
+  font-size: 16px;
+  color: #1b1f20;
+}
+header {
+  background-color: lightblue;
+  box-shadow: 10px 0px 20px;
+}
+
+.menu-list {
+  text-align: center;
+  margin-top: 20px;
+}
+
+ul.menu-list > li {
+  display: inline-block;
+  margin-left: 45px;
+  line-height: 30px;
+  color: #fff !important;
+  font-size: 18px;
+  font-weight: bold;
+  position: relative;
+}
+
+ul.menu-list > li a {
+  color: #1b1f20;
+  -webkit-transition: all 0.3s ease;
+  font-weight: bolder;
+  font-size: 20px;
+}
+ul.menu-list > li a:hover {
+  color: #fff;
+  text-decoration: none;
+}
+
+.menu-list li ul.sub-menu {
+  display: none;
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  width: 155px;
+  z-index: 9999;
+  top: 36px;
+  list-style: none;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+.menu-list li:hover ul.sub-menu {
+  display: block;
+}
+
+.menu-list li ul.sub-menu li {
+  border-bottom: 2px solid #1b1f20;
+  background-color: lightblue;
+}
+
+.menu-list li ul.sub-menu li a {
+  width: 100%;
+  color: #1b1f20;
+  padding: 8px;
+  text-decoration: none;
+}
+.menu-list li ul.sub-menu li {
+  padding: 10px;
+  position: relative;
+}
+.menu-list li ul.sub-menu li a:hover {
+  color: #fff;
+  text-decoration: none;
+}
+
+.menu-list li ul.sub-menu:before {
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 6px solid #fff;
+  content: "";
+  height: 0;
+  right: 20px;
+  position: absolute;
+  top: -6px;
+  width: 0;
+}
+
+/* sub sub menu */
+
+.menu-list li ul.sub-menu li ul.sub-menu {
+  position: absolute;
+  left: 156px;
+  top: 22px;
+  display: none;
+}
+
+.menu-list li ul.sub-menu li:hover ul.sub-menu {
+  display: block;
+}
+
+.menu-list li ul.sub-menu li ul.sub-menu:before {
+  display: none;
+}

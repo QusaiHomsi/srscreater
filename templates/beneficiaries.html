@@ -2,11 +2,13 @@
 <html lang="en">
   <head>
     <link rel="stylesheet" href="../static/table.css" />
+    <link rel="stylesheet" href="../static/navbar.css" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>All Beneficiaries</title>
   </head>
   <body>
+    {% include 'navbar.html' %}
     <h1 class="title">قائمة جميع المستفيدين</h1>
     <table>
       <thead>
@@ -32,13 +34,5 @@
         {% endfor %}
       </tbody>
     </table>
-    <div>
-      <a href="/add_service_beneficiary_form">
-        <button class="screenspage">اضافة مستفيد</button></a
-      >
-    </div>
-    <div>
-      <a href="/"> <button class="screenspage">الصفحة الرئيسة</button></a>
-    </div>
   </body>
 </html>

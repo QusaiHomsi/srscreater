@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Table Information</title>
+    <link rel="stylesheet" href="../static/navbar.css" />
+    <link rel="stylesheet" href="../static/table.css" />
+  </head>
+  <body>
+    {% include 'navbar.html' %}
+
+    <h1 class="title">تعديل معلومات الجدول</h1>
+
+    <form action="/update_table_info/{{ table.id }}" method="POST">
+      <h2>معلومات أساسية عن الجدول</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>اسم الجدول</th>
+            <th>التصنيف القطاعي للجدول</th>
+            <th>مكان تقديم الجدول</th>
+            <th>هيكلية الجدول</th>
+            <th>نوع الجدول</th>
+            <th>تصنيف الجدول</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <input
+                type="text"
+                name="table_name"
+                value="{{ table.table_name }}"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                name="sector_class"
+                value="{{ table.sector_class }}"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                name="service_place"
+                value="{{ table.service_place }}"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                name="service_structure"
+                value="{{ table.service_structure }}"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                name="service_type"
+                value="{{ table.service_type }}"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                name="service_class"
+                value="{{ table.service_class }}"
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>رسوم الجدول</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>بند الرسوم</th>
+            <th>الوصف</th>
+            <th>القيمة (دينار)</th>
+            <th>طرق الدفع</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><input type="text" name="fees" value="{{ table.fees }}" /></td>
+            <td>
+              <input
+                type="text"
+                name="fees_description"
+                value="{{ table.fees_description }}"
+              />
+            </td>
+            <td>
+              <input
+                type="number"
+                name="fees_amount"
+                value="{{ table.fees_amount }}"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                name="fees_payment"
+                value="{{ table.fees_payment }}"
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>الشروط العامة</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>القواعد العامة</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <textarea name="general_rules">
+{{ table.general_rules }}</textarea
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>الوثائق المشتركة</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>فئة المتعاملين</th>
+            <th>الاسم</th>
+            <th>شكل الوثيقة</th>
+            <th>الوصف</th>
+            <th>الشروط</th>
+            <th>مصدر الوثيقة</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <input
+                type="text"
+                name="customer_category"
+                value="{{ table.customer_category }}"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                name="document_name"
+                value="{{ table.document_name }}"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                name="document_type"
+                value="{{ table.document_type }}"
+              />
+            </td>
+            <td>
+              <textarea name="document_description">
+{{ table.document_description }}</textarea
+              >
+            </td>
+            <td>
+              <textarea name="document_rules">
+{{ table.document_rules }}</textarea
+              >
+            </td>
+            <td>
+              <input
+                type="text"
+                name="document_origin"
+                value="{{ table.document_origin }}"
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>مخرجات الجدول</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>الاسم</th>
+            <th>شكل الوثيقة</th>
+            <th>الوصف</th>
+            <th>الشروط</th>
+            <th>مدة الصلاحية</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <input
+                type="text"
+                name="outputs_name"
+                value="{{ table.outputs_name }}"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                name="outputs_type"
+                value="{{ table.outputs_type }}"
+              />
+            </td>
+            <td>
+              <textarea name="outputs_description">
+{{ table.outputs_description }}</textarea
+              >
+            </td>
+            <td>
+              <textarea name="outputs_rules">
+{{ table.outputs_rules }}</textarea
+              >
+            </td>
+            <td>
+              <input
+                type="text"
+                name="outputs_expiry"
+                value="{{ table.outputs_expiry }}"
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <button type="submit">تحديث المعلومات</button>
+    </form>
+  </body>
+</html>
