@@ -12,12 +12,12 @@
     <title>Table Details</title>
 </head>
 <body>
-    {% include 'navbar.html' %}
+    <a href="/">
     <img
       src="{{ url_for('static', filename='../static/uploads/logo.jpg') }}"
       alt="Logo"
       class="logo"
-    />
+    /></a>
     <br />
     <br />
     <p class="title_screen">وثيقة تحليل متطلبات الخدمات الإلكترونية</p>
@@ -117,7 +117,7 @@
           </tbody>
         </table>
    
-    <button type="submit">{{ "Save" }}</button>
+   
   </form>
 </div>
 
@@ -158,8 +158,7 @@
                     وقواعد اعمال)
                 </th>
                 <th>صورة للشاشة</th> 
-                <th>حذف</th>
-                <th>تعديل</th>
+             
             </tr>
         </thead>
         <tbody>
@@ -177,20 +176,7 @@
                   />
                   {% else %} No screenshot available {% endif %}
               </td>
-              <td>
-                  <form
-                      action="/delete_screen/{{ screen.id }}"
-                      method="post"
-                      onsubmit="return confirm('هل انت متاكد من حذف الشاشة؟')"
-                  >
-                      <button onclick="screenModified()" class="delete" type="submit">حذف الشاشة</button>
-                  </form>
-              </td>
-              <td>
-                  <a href="/edit_screen/{{ screen.id }}"
-                      ><button onclick="screenModified()">تعديل معلومات الشاشة</button></a
-                  >
-              </td>
+           
           </tr>
           {% endfor %}
           
@@ -198,15 +184,6 @@
     </table>
     
     {% endfor %}
-<a href="/add_screen_to_table/{{ table.id }}"
-        ><button onclick="screenModified()">اضافة شاشة</button></a
-    >
-    <div>
-        <a href="/"> <button class="screenspage">الصفحة الرئيسة</button></a>
-    </div>
-    <div>
-        <a href="/print/{{ table.id }}"><button>طباعة</button></a>
-    </div>
 
     <!-- Enlarged Image Section -->
     <div id="enlarged-image" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9999;">

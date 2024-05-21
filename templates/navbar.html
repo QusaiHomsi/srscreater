@@ -1,43 +1,39 @@
+<head> </head>
 <header>
   <div class="container">
     <div class="row">
       <div class="col-md-12">
-        <ul id="menu" class="menu-list">
-          <li>
-            <a href="/"
-              ><img src="../static/uploads/logo.jpg" alt="Logo" width="100"
-            /></a>
-          </li>
-
-          <li>
-            <a href="">قوائم</a>
-            <ul class="sub-menu">
-              <li><a href="/userlist"> قائمة المستخدمين</a></li>
-              <li>
-                <a href="/beneficiaries">قائمة المستفيدين من الخدمة</a>
-              </li>
-              <li><a href="/channels">قائمة قنوات تقديم الخدمة</a></li>
-            </ul>
-          </li>
-
-          <li>
-            <a href="">اضافة</a>
-            <ul class="sub-menu">
-              <li><a href="/new_table">اضافة خدمة</a></li>
-              <li><a href="/users">اضافة مستخدم جديد</a></li>
-
-              <li>
-                <a href="/add_service_beneficiary_form">اضافة مستفيد</a>
-              </li>
-              <li><a href="/add_service_channel_form">اضافة قناة</a></li>
-            </ul>
-          </li>
-          <li><a href="./wireframe.html">wireframe</a></li>
-        </ul>
+        <div id="drawer-menu" class="drawer-menu">
+          <button id="drawer-toggle" class="drawer-toggle">&#9776;</button>
+          <ul id="menu" class="menu-list">
+            <li>
+              <a href="/"
+                ><img src="../static/uploads/logo.jpg" alt="Logo" width="100"
+              /></a>
+            </li>
+            <li>
+              <!--<a href="#">قوائم</a>-->
+              <ul class="sub-menu">
+                <li><a href="/">الخدمات</a></li>
+                <li><a href="/userlist">المستخدمين</a></li>
+                <li><a href="/beneficiaries">المستفيدين من الخدمة</a></li>
+                <li><a href="/channels">قنوات تقديم الخدمة</a></li>
+                <li><a href="./wireframe.html">wireframe</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
       </div>
-      <!-- end column -->
     </div>
-    <!-- end row -->
   </div>
-  <!-- end container -->
 </header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const drawerToggle = document.getElementById("drawer-toggle");
+    const body = document.body;
+
+    drawerToggle.addEventListener("click", function () {
+      body.classList.toggle("menu-open");
+    });
+  });
+</script>

@@ -242,3 +242,10 @@ select.classic:focus {
   text-decoration: none;
   cursor: pointer;
 }
+h1 {
+  margin: 50px;
+  font-size: 30px;
+  color: #1b1f20;
+  font-weight: 600;
+  max-width: 350px;
+}
