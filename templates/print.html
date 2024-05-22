@@ -5,278 +5,254 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../static/navbar.css" />
-    <script
-    src="https://cdn.tiny.cloud/1/z69tp80jmlesld65z70s45ymnhqlcnp4ec0dsvrxc8tsiyxb/tinymce/5/tinymce.min.js"
-    referrerpolicy="origin"
-  ></script>
+    <script src="https://cdn.tiny.cloud/1/z69tp80jmlesld65z70s45ymnhqlcnp4ec0dsvrxc8tsiyxb/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
     <title>Table Details</title>
+    
+    <!-- Print Stylesheet -->
+    <style>
+        @media print {
+            .tox-tinymce, .tox-tinymce-aux, .tox-editor-header, .tox-toolbar, .tox-statusbar, .tox-sidebar {
+                display: none !important;
+            }
+            .user-description {
+                display: block !important;
+                border: none !important;
+                box-shadow: none !important;
+            }
+            .print-hide {
+                display: none !important;
+            }
+        }
+    </style>
 </head>
 <body>
     <a href="/">
-    <img
-      src="{{ url_for('static', filename='../static/uploads/logo.jpg') }}"
-      alt="Logo"
-      class="logo"
-    /></a>
+        <img src="{{ url_for('static', filename='../static/uploads/logo.jpg') }}" alt="Logo" class="logo" />
+    </a>
     <br />
     <br />
     <p class="title_screen">وثيقة تحليل متطلبات الخدمات الإلكترونية</p>
     <p class="title_screen">أتمتة خدمات الهيئة البحرية</p>
     <p class="title_screen" style="text-decoration: underline"> {{ table.table_name }}</p>
     <div class="author">
-      <table class="author" >
-        <tr></tr><th class="author">Author:<div class="author"><input class="print"></input></div></th></tr>
-        <div class="author"><th class="author"><p class="author" id="todayDate"></p></th></div>
-        <tr>
-  <th class="author"><p id="lastUpdated"></p></th>
-        </tr>
-        <tr class="author">
-          <th class="author"><p class="author">Version:<div class="author"><input class="print"></input></div></p></th>
-        </tr>
-      </table>
-    </div>
-      <br><br><br><br>
-
-
-      <table border="1">
-        <thead>
-          <tr>
-            <th colspan="4">الموافقات والتواقيع</th>
-          </tr>
-          <tr><td>الاسم</td> <td>المنصب</td> <td>التاريخ</td>
-            <td>التوقيع</td>
-            
-            
-             
-          </tr>
-          <tr><td></td><td></td><td></td><td></td></tr>
-          <tr><td></td><td></td><td></td><td></td></tr>
-          <tr><td></td><td></td><td></td><td></td></tr>
-          <tr><td></td><td></td><td></td><td></td></tr>
-          <tr><td></td><td></td><td></td><td></td></tr>
-          <tr><td></td><td></td><td></td><td></td></tr>
-          <tr><td></td><td></td><td></td><td></td></tr>
-          <tr><td></td><td></td><td></td><td></td></tr>
-          
-          
-        </thead>
-        <tbody>
-          
-          </table>
-        <br><br><br><br><br>
-          <table>
+        <table class="author">
             <tr>
-            <th colspan="4">الإصدارات</th>
-          </tr>
-          <tr><td>رقم الإصدار</td><td>التاريخ</td> <td>أعده</td><td>التغييرات</td>
-            
-           
-            
-            
-          </tr>
-          <tr><td></td><td></td><td></td><td></td></tr>
-          <tr><td></td><td></td><td></td><td></td></tr>
-          <tr><td></td><td></td><td></td><td></td></tr>
-          <tr><td></td><td></td><td></td><td></td></tr>
-          <tr><td></td><td></td><td></td><td></td></tr>
-          <tr><td></td><td></td><td></td><td></td></tr>
-        </tbody>
-      </table>
-    
-<br><br><br><br><br><br><br><br><br><br><br>
-<div class="service_description">
-  <h1>مقدمة عن الخدمة</h1>
-  <h3>{{ table.table_description |safe }}</h3>
-</div>
-<br><br><br><br><br><br><br><br><br><br><br>
-<div class="users">
-  <p style="color: red;">{{ "أنواع المستخدمين" }}</p>
-  <h1>{{ "سيناريوهات المستخدم وسير الإجراء" }}</h1>
-  <form action="/save_user_descriptions" method="post">
-    <input type="hidden" name="table_id" value="{{ table.id }}"> <!-- Add a hidden input field to include the table ID -->
-   
-        <table>
-          <thead> 
-              <th>{{ "اسم المستخدم" }}</th>
-              <th>{{ "وصف المهام" }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>{% for user in users %}
-      <!-- Check if the user has screens associated -->
-      {% if user.screens %}
-            <tr>
-              <td>{{ user.username }}</td>
-              <td>
-                <textarea class="user-description" name="user_descriptions[]" rows="4" cols="50">
-                  {{ user_descriptions[user.id] if user.id in user_descriptions else '' }}
-                </textarea>   {% endif %}
-    {% endfor %}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-   
-   
-  </form>
-</div>
-
-  
-
-
-<p style="color: black;">.يتم شرح جميع الأدوار بالتفصيل في كل مرحلة بالجدول الخاص بسير العمل</p>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-<p style="color: red;">قنوات تقديم الخدمة (Service Channels)</p>
-<p>_______________________________</p>
-<ul>
-    {% for channel in table.channels %}
-    <li>{{ channel.channel_name }}</li>
-    {% endfor %}
-</ul>
-<p style="color: red;">المستفيد من الخدمة (Service Beneficiary)</p>
-<p>_______________________________</p>
-<ul>
-    {% for beneficiary in table.beneficiaries %}
-    <li>{{ beneficiary.beneficiary_name }}</li>
-    {% endfor %}
-</ul>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-    
-
-
-    <!-- Iterate over each user to create a separate table for their screens -->
-    {% for user in users %}
-    <table>
-        <thead>
-            <tr>
-                <th colspan="5">Screens for {{ user.username }}</th> <!-- Display user's name -->
-            </tr>
-            <tr>
-                <th>الشاشة</th>
-                <th>
-                    الوصف (وصف مكونات الشاشة وحقولها والبيانات وتفاصيلها والتحققات
-                    وقواعد اعمال)
+                <th class="author">Author:
+                    <div class="author"><input class="print"></input></div>
                 </th>
-                <th>صورة للشاشة</th> 
-             
             </tr>
+            <tr>
+                <th class="author"><p class="author" id="todayDate"></p></th>
+            </tr>
+            <tr>
+                <th class="author"><p id="lastUpdated"></p></th>
+            </tr>
+            <tr class="author">
+                <th class="author">Version:
+                    <div class="author"><input class="print"></input></div>
+                </th>
+            </tr>
+        </table>
+    </div>
+    <br><br><br><br>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th colspan="4">الموافقات والتواقيع</th>
+            </tr>
+            <tr>
+                <td>الاسم</td>
+                <td>المنصب</td>
+                <td>التاريخ</td>
+                <td>التوقيع</td>
+            </tr>
+            <tr><td></td><td></td><td></td><td></td></tr>
+            <tr><td></td><td></td><td></td><td></td></tr>
+            <tr><td></td><td></td><td></td><td></td></tr>
+            <tr><td></td><td></td><td></td><td></td></tr>
+            <tr><td></td><td></td><td></td><td></td></tr>
+            <tr><td></td><td></td><td></td><td></td></tr>
+            <tr><td></td><td></td><td></td><td></td></tr>
         </thead>
         <tbody>
-          {% for screen in screens %}
-          <tr>
-              <td>{{ screen.screen_name }}</td>
-              <td style="white-space: nowrap; overflow: auto;"><p>{{ screen.screen_description | safe }}</p></td>
-              <td>
-                  {% if screen.screenshot_path %}
-                  <img
-                      src="{{ url_for('static', filename='uploads/' + screen.screenshot_path) }}"
-                      alt="Screenshot"
-                      style="max-width: 100px; cursor: pointer;"
-                      onclick="showEnlarged(this)"
-                  />
-                  {% else %} No screenshot available {% endif %}
-              </td>
-           
-          </tr>
-          {% endfor %}
-          
-        </tbody>
-    </table>
+        </table>
+        <br><br><br><br><br>
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="4">الإصدارات</th>
+                </tr>
+                <tr>
+                    <td>رقم الإصدار</td>
+                    <td>التاريخ</td>
+                    <td>أعده</td>
+                    <td>التغييرات</td>
+                </tr>
+                <tr><td></td><td></td><td></td><td></td></tr>
+                <tr><td></td><td></td><td></td><td></td></tr>
+                <tr><td></td><td></td><td></td><td></td></tr>
+                <tr><td></td><td></td><td></td><td></td></tr>
+                <tr><td></td><td></td><td></td><td></td></tr>
+                <tr><td></td><td></td><td></td><td></td></tr>
+            </thead>
+            <tbody>
+        </table>
     
+    <br><br><br><br><br><br><br><br><br><br><br>
+    <div class="service_description">
+        <h1>مقدمة عن الخدمة</h1>
+        <h3>{{ table.table_description |safe }}</h3>
+    </div>
+    <br><br><br><br><br><br><br><br><br><br><br>
+    <div class="users">
+        <p style="color: red;">{{ "أنواع المستخدمين" }}</p>
+        <h1>{{ "سيناريوهات المستخدم وسير الإجراء" }}</h1>
+        <form action="/save_user_descriptions" method="post">
+            <input type="hidden" name="table_id" value="{{ table.id }}">
+            <table>
+                <thead>
+                    <tr>
+                        <th>{{ "اسم المستخدم" }}</th>
+                        <th>{{ "وصف المهام" }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        {% if user.screens %}
+                            <tr>
+                                <td>{{ user.username }}</td>
+                                <td>
+                                  <div >
+                                    {{ (user_descriptions[user.id] if user.id in user_descriptions else '') | safe }}
+                                </div>
+                                
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </form>
+    </div>
+
+    <p style="color: black;">.يتم شرح جميع الأدوار بالتفصيل في كل مرحلة بالجدول الخاص بسير العمل</p>
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <p style="color: red;">قنوات تقديم الخدمة (Service Channels)</p>
+    <p>_______________________________</p>
+    <ul>
+        {% for channel in table.channels %}
+            <li>{{ channel.channel_name }}</li>
+        {% endfor %}
+    </ul>
+    <p style="color: red;">المستفيد من الخدمة (Service Beneficiary)</p>
+    <p>_______________________________</p>
+    <ul>
+        {% for beneficiary in table.beneficiaries %}
+            <li>{{ beneficiary.beneficiary_name }}</li>
+        {% endfor %}
+    </ul>
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+    {% for user in users %}
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="5">Screens for {{ user.username }}</th>
+                </tr>
+                <tr>
+                    <th>الشاشة</th>
+                    <th>الوصف (وصف مكونات الشاشة وحقولها والبيانات وتفاصيلها والتحققات وقواعد اعمال)</th>
+                    <th>صورة للشاشة</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for screen in screens %}
+                    <tr>
+                        <td>{{ screen.screen_name }}</td>
+                        <td style="white-space: nowrap; overflow: auto;"><p>{{ screen.screen_description | safe }}</p></td>
+                        <td>
+                            {% if screen.screenshot_path %}
+                                <img src="{{ url_for('static', filename='uploads/' + screen.screenshot_path) }}" alt="Screenshot" style="max-width: 100px; cursor: pointer;" onclick="showEnlarged(this)" />
+                            {% else %}
+                                No screenshot available
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     {% endfor %}
 
-    <!-- Enlarged Image Section -->
     <div id="enlarged-image" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9999;">
         <span onclick="hideEnlarged()" style="position: absolute; top: 20px; right: 20px; font-size: 24px; color: #fff; cursor: pointer;">&times;</span>
         <img id="enlarged-img" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); max-width: 90%; max-height: 90%; cursor: pointer;">
-    </div>
+      </div>
+  
+      <script>
+          var lastUpdated = new Date(document.lastModified);
+          var day = String(lastUpdated.getDate()).padStart(2, '0');
+          var month = String(lastUpdated.getMonth() + 1).padStart(2, '0');
+          var year = lastUpdated.getFullYear();
+          var lastUpdatedDate = day + '-' + month + '-' + year;
+          document.getElementById("lastUpdated").innerHTML = "Last updated on " + lastUpdatedDate;
+          
+          var today = new Date();
+          var day = String(today.getDate()).padStart(2, '0');
+          var month = String(today.getMonth() + 1).padStart(2, '0');
+          var year = today.getFullYear();
+          var todayDate = day + '-' + month + '-' + year;
+          document.getElementById("todayDate").innerHTML = "Creation Date:" + todayDate;
+  
+          function updateVersion() {
+              var versionElement = document.getElementById("version");
+              var currentVersion = parseFloat(versionElement.textContent);
+              var newVersion = (currentVersion + 0.1).toFixed(1);
+              versionElement.textContent = newVersion;
+          }
+  
+          function screenModified() {
+              updateVersion();
+          }
+  
+          function showEnlarged(image) {
+              var enlargedImage = document.getElementById("enlarged-img");
+              enlargedImage.src = image.src;
+              document.getElementById("enlarged-image").style.display = "block";
+          }
+  
+          function hideEnlarged() {
+              document.getElementById("enlarged-image").style.display = "none";
+          }
+  
+          let unsavedChanges = false;
+          let formSubmitted = false;
+  
+          tinymce.init({
+              selector: "textarea.user-description",
+              height: 200,
+              language: "ar",
+              plugins: [
+                  "advlist autolink lists link image charmap print preview anchor",
+                  "searchreplace visualblocks code fullscreen",
+                  "insertdatetime media table paste code help wordcount",
+              ],
+              toolbar: "undo redo | formatselect | bold italic backcolor forecolor| alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help",
+              setup: function (editor) {
+                  editor.on("change", function () {
+                      unsavedChanges = true;
+                  });
+              },
+          });
 
-    <script>
-        // Get the last modified date of the current document
-        var lastUpdated = new Date(document.lastModified);
-        
-        // Extract date components
-        var day = String(lastUpdated.getDate()).padStart(2, '0');
-        var month = String(lastUpdated.getMonth() + 1).padStart(2, '0'); // January is 0!
-        var year = lastUpdated.getFullYear();
-        
-        // Concatenate date components
-        var lastUpdatedDate = day + '-' + month + '-' + year;
-        
-        // Display the last updated date in the specified paragraph
-        document.getElementById("lastUpdated").innerHTML = "Last updated on " + lastUpdatedDate;
-        
-        // Get today's date
-        var today = new Date();
-        
-        // Extract date components
-        var day = String(today.getDate()).padStart(2, '0');
-        var month = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
-        var year = today.getFullYear();
-        
-        // Concatenate date components
-        var todayDate = day + '-' + month + '-' + year;
-        
-        // Display today's date in the specified paragraph
-        document.getElementById("todayDate").innerHTML = "Creation Date:" + todayDate;
-
-        // Define a function to update the version number
-        function updateVersion() {
-            // Get the current version element
-            var versionElement = document.getElementById("version");
-            
-            // Get the current version number
-            var currentVersion = parseFloat(versionElement.textContent);
-            
-            // Increment the version number by 0.1 (or any other desired increment)
-            var newVersion = (currentVersion + 0.1).toFixed(1);
-            
-            // Update the version number in the HTML
-            versionElement.textContent = newVersion;
-        }
-
-        // Call updateVersion whenever a screen is added, deleted, or edited
-        function screenModified() {
-            // Call updateVersion function
-            updateVersion();
-        }
-
-        function showEnlarged(image) {
-            var enlargedImage = document.getElementById("enlarged-img");
-            enlargedImage.src = image.src;
-            document.getElementById("enlarged-image").style.display = "block";
-        }
-
-        // Function to hide the enlarged image when clicked
-        function hideEnlarged() {
-            document.getElementById("enlarged-image").style.display = "none";
-
-        }
-
-
-        let unsavedChanges = false;
-      let formSubmitted = false; // Flag to indicate if the form is being submitted intentionally
-
-      tinymce.init({
-        selector: "textarea.user-description",
-        height: 200,
-        language: "ar",
-        plugins: [
-            "advlist autolink lists link image charmap print preview anchor",
-            "searchreplace visualblocks code fullscreen",
-            "insertdatetime media table paste code help wordcount",
-        ],
-        toolbar:
-            "undo redo | formatselect | bold italic backcolor forecolor| \
-            alignleft aligncenter alignright alignjustify | \
-            bullist numlist outdent indent | removeformat | help",
-        setup: function (editor) {
-            editor.on("change", function () {
-                unsavedChanges = true;
-            });
-        },
-    });
-    </script>
-
-</body>
-</html>
+          window.addEventListener('beforeprint', () => {
+              document.querySelectorAll('.print-show').forEach(el => {
+                  const textarea = el.previousElementSibling.querySelector('textarea');
+                  if (textarea) {
+                      el.innerHTML = textarea.value;
+                  }
+              });
+          });
+      </script>
+  </body>
+  </html>

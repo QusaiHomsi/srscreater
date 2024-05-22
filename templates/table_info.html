@@ -6,6 +6,10 @@
     <title>Edit Table Information</title>
     <link rel="stylesheet" href="../static/navbar.css" />
     <link rel="stylesheet" href="../static/table.css" />
+    <script
+      src="https://cdn.tiny.cloud/1/z69tp80jmlesld65z70s45ymnhqlcnp4ec0dsvrxc8tsiyxb/tinymce/5/tinymce.min.js"
+      referrerpolicy="origin"
+    ></script>
   </head>
   <body>
     {% include 'navbar.html' %}
@@ -87,11 +91,14 @@
           <tr>
             <td><input type="text" name="fees" value="{{ table.fees }}" /></td>
             <td>
-              <input
+              <textarea
                 type="text"
+                id="fees_description"
                 name="fees_description"
                 value="{{ table.fees_description }}"
-              />
+              >
+{{ table.fees_description }}</textarea
+              >
             </td>
             <td>
               <input
@@ -235,5 +242,25 @@
 
       <button type="submit">تحديث المعلومات</button>
     </form>
+    <script>
+      tinymce.init({
+        selector: "#fees_description",
+        language: "ar",
+        plugins:
+          "advlist autolink lists link image charmap print preview anchor",
+        toolbar:
+          "undo redo | formatselect | bold italic backcolor forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat |help",
+        height: 400,
+        content_style:
+          "body { font-family: Arial, sans-serif; font-size: 14px }",
+        directionality: "rtl", // Set text direction to right-to-left
+        setup: function (editor) {
+          editor.on("change", function () {
+            // Set unsavedChanges to true when content changes
+            unsavedChanges = true;
+          });
+        },
+      });
+    </script>
   </body>
 </html>

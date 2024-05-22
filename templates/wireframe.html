@@ -1,263 +1,329 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="../static/navbar.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wireframe Tool</title>
     <style>
-      #canvas {
-        width: 800px;
-        height: 600px;
-        border: 1px solid black;
-        position: relative;
-        overflow: hidden;
-        background-size: 20px 20px;
-        background-image: linear-gradient(
-            to right,
-            lightgray 1px,
-            transparent 1px
-          ),
-          linear-gradient(to bottom, lightgray 1px, transparent 1px);
-      }
-      .placed {
-        min-width: 100px;
-        padding: 10px;
-        border: 1px solid #ccc;
-        margin: 0;
-        background-color: white;
-        cursor: grab;
-        position: absolute;
-      }
-      .selected {
-        outline: 2px solid blue;
-      }
-      .editable-label {
-        display: block;
-        margin-bottom: 5px;
-        border: none;
-        background: none;
-        width: calc(100% - 20px);
-        font-size: 16px;
-      }
+        #canvas {
+            width: 800px;
+            height: 600px;
+            border: 1px solid black;
+            position: relative;
+            overflow: hidden;
+            background-size: 20px 20px;
+            background-image: linear-gradient(to right, lightgray 1px, transparent 1px), 
+                              linear-gradient(to bottom, lightgray 1px, transparent 1px);
+        }
+        .placed {
+            min-width: 100px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin: 0;
+            background-color: white;
+            cursor: grab;
+            position: absolute;
+        }
+        .selected {
+            outline: 2px solid blue;
+        }
+        .editable-label {
+            display: block;
+            margin-bottom: 5px;
+            border: none;
+            background: none;
+            width: calc(100% - 20px);
+            font-size: 16px;
+        }
+        .group {
+            border: 2px dashed #333;
+            position: absolute;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.1);
+            cursor: grab;
+        }
     </style>
-  </head>
-  {% include 'navbar.html' %}
-  
+</head>
+<body>
     <div>
-      Canvas Width:
-      <input
-        id="canvasWidth"
-        type="number"
-        value="800"
-        min="300"
-        max="2000"
-        step="10"
-      />
-      Canvas Height:
-      <input
-        id="canvasHeight"
-        type="number"
-        value="600"
-        min="300"
-        max="2000"
-        step="10"
-      />
-      <button onclick="resizeCanvas()">Set Size</button>
-      <button onclick="exportCanvasAsPNG()">Export as PNG</button>
+        Canvas Width: <input id="canvasWidth" type="number" value="800" min="300" max="2000" step="10"> 
+        Canvas Height: <input id="canvasHeight" type="number" value="600" min="300" max="2000" step="10">
+        <button onclick="resizeCanvas()">Set Size</button>
+        <button onclick="exportCanvasAsPNG()">Export as PNG</button>
     </div>
-    <div
-      id="canvas"
-      tabindex="0"
-      onkeydown="keyAction(event)"
-      style="width: 800px; height: 600px"
-      ondrop="drop(event)"
-      ondragover="allowDrop(event)"
-    ></div>
+    <div id="canvas" tabindex="0" onkeydown="keyAction(event)" style="width: 800px; height: 600px;" ondragover="allowDrop(event)">
+    </div>
     <div id="tools">
-      <div
-        class="draggable"
-        draggable="true"
-        ondragstart="drag(event)"
-        data-type="textbox"
-      >
-        Textbox
-      </div>
-      <div
-        class="draggable"
-        draggable="true"
-        ondragstart="drag(event)"
-        data-type="checkbox"
-      >
-        Checkbox
-      </div>
-      <div
-        class="draggable"
-        draggable="true"
-        ondragstart="drag(event)"
-        data-type="radio"
-      >
-        Radio Button
-      </div>
-      <div
-        class="draggable"
-        draggable="true"
-        ondragstart="drag(event)"
-        data-type="textarea"
-      >
-        Text Area
-      </div>
-      <div
-        class="draggable"
-        draggable="true"
-        ondragstart="drag(event)"
-        data-type="button"
-      >
-        Button
-      </div>
+        <div class="draggable" draggable="true" ondragstart="drag(event)" data-type="textbox">Textbox</div>
+        <div class="draggable" draggable="true" ondragstart="drag(event)" data-type="checkbox">Checkbox</div>
+        <div class="draggable" draggable="true" ondragstart="drag(event)" data-type="radio">Radio Button</div>
+        <div class="draggable" draggable="true" ondragstart="drag(event)" data-type="textarea">Text Area</div>
+        <div class="draggable" draggable="true" ondragstart="drag(event)" data-type="button">Button</div>
+        <!-- Add a draggable group tool -->
+        <div class="draggable" draggable="true" ondragstart="drag(event)" data-type="group">Group</div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
-      let selectedElement = null;
-      let idCounter = 0;
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvas = document.getElementById('canvas');
+            canvas.addEventListener('dragover', allowDrop);
+            canvas.addEventListener('drop', drop);
+            canvas.addEventListener('mousedown', startDrag);
+            canvas.addEventListener('mousemove', dragElement);
+            canvas.addEventListener('mouseup', endDrag);
+            canvas.setAttribute('tabindex', '0');
+            canvas.addEventListener('keydown', keyAction, true);
 
-      function resizeCanvas() {
-        const canvas = document.getElementById("canvas");
-        const width = document.getElementById("canvasWidth").value;
-        const height = document.getElementById("canvasHeight").value;
-        canvas.style.width = width + "px";
-        canvas.style.height = height + "px";
-      }
-
-      function allowDrop(ev) {
-        ev.preventDefault();
-      }
-
-      function drag(ev) {
-        ev.dataTransfer.setData("type", ev.target.getAttribute("data-type"));
-        ev.dataTransfer.setData("source", "toolbox");
-      }
-
-      function drop(ev) {
-        ev.preventDefault();
-        var source = ev.dataTransfer.getData("source");
-        if (source === "toolbox") {
-          var elementType = ev.dataTransfer.getData("type");
-          var element = createUIElement(elementType);
-          placeElementOnCanvas(ev, element);
-        }
-      }
-
-      function createUIElement(type) {
-        var el = document.createElement("div");
-        el.className = "placed";
-        el.id = "element-" + idCounter++;
-        el.setAttribute("data-type", type);
-        el.draggable = true;
-        el.ondragstart = function (event) {
-          dragExistingElement(event, el);
-        };
-        el.onclick = function () {
-          selectElement(el);
-        };
-
-        var label = document.createElement("input");
-        label.type = "text";
-        label.className = "editable-label";
-        label.value = type.charAt(0).toUpperCase() + type.slice(1);
-        el.appendChild(label);
-
-        var input;
-        switch (type) {
-          case "textbox":
-            input = document.createElement("input");
-            break;
-          case "checkbox":
-            input = document.createElement("input");
-            input.type = "checkbox";
-            break;
-          case "radio":
-            input = document.createElement("input");
-            input.type = "radio";
-            break;
-          case "textarea":
-            input = document.createElement("textarea");
-            input.placeholder = "Enter text";
-            break;
-          case "button":
-            input = document.createElement("button");
-            input.textContent = "Click Me";
-            break;
-        }
-        el.appendChild(input);
-        return el;
-      }
-
-      function dragExistingElement(event, element) {
-        event.dataTransfer.setData("type", element.getAttribute("data-type"));
-        event.dataTransfer.setData("source", "canvas");
-        event.dataTransfer.setData("id", element.id);
-      }
-
-      function placeElementOnCanvas(ev, element) {
-        var canvas = document.getElementById("canvas");
-        var rect = canvas.getBoundingClientRect();
-        var posX = ev.clientX - rect.left + window.scrollX;
-        var posY = ev.clientY - rect.top + window.scrollY;
-
-        element.style.left = posX + "px";
-        element.style.top = posY + "px";
-        canvas.appendChild(element);
-        selectElement(element);
-      }
-
-      function selectElement(el) {
-        if (selectedElement) {
-          selectedElement.classList.remove("selected");
-        }
-        selectedElement = el;
-        selectedElement.classList.add("selected");
-      }
-
-      function keyAction(event) {
-        if (!selectedElement) return;
-        switch (event.key) {
-          case "ArrowLeft":
-            selectedElement.style.left =
-              parseInt(selectedElement.style.left, 10) - 10 + "px";
-            break;
-          case "ArrowRight":
-            selectedElement.style.left =
-              parseInt(selectedElement.style.left, 10) + 10 + "px";
-            break;
-          case "ArrowUp":
-            selectedElement.style.top =
-              parseInt(selectedElement.style.top, 10) - 10 + "px";
-            break;
-          case "ArrowDown":
-            selectedElement.style.top =
-              parseInt(selectedElement.style.top, 10) + 10 + "px";
-            break;
-          case "Delete":
-          case "Backspace":
-            selectedElement.remove();
-            selectedElement = null;
-            break;
-        }
-      }
-
-      function exportCanvasAsPNG() {
-        const canvasElement = document.getElementById("canvas");
-
-        html2canvas(canvasElement, { scale: 1 }).then((canvas) => {
-          var link = document.createElement("a");
-          link.download = "wireframe.png";
-          link.href = canvas.toDataURL();
-          link.click();
-          link.delete;
+            // Deselect elements when clicking outside
+            document.addEventListener('mousedown', function(event) {
+                if (!event.target.closest('.draggable') && !event.target.closest('#canvas')) {
+                    deselectElement();
+                }
+            });
         });
-      }
+
+        let selectedElement = null;
+        let active = false;
+        let startX = 0;
+        let startY = 0;
+        let offsetX = 0;
+        let offsetY = 0;
+
+        function drag(event) {
+            event.dataTransfer.setData("type", event.target.getAttribute('data-type'));
+            event.dataTransfer.effectAllowed = "move";
+        }
+
+        function allowDrop(e) {
+            e.preventDefault();
+        }
+
+        function drop(e) {
+            e.preventDefault();
+            const elementType = e.dataTransfer.getData("type");
+            if (elementType) {
+                if (elementType === 'group') {
+                    createGroupArea(e);
+                } else {
+                    const element = createUIElement(elementType);
+                    placeElementOnCanvas(e, element);
+                }
+            }
+        }
+
+        function startDrag(e) {
+            const target = e.target.closest('.draggable');
+            if (!target) return;
+            selectElement(target);
+            active = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            offsetX = startX - selectedElement.offsetLeft;
+            offsetY = startY - selectedElement.offsetTop;
+            e.preventDefault();
+        }
+
+        function dragElement(e) {
+            if (!active) return;
+            e.preventDefault();
+            const x = e.clientX - offsetX;
+            const y = e.clientY - offsetY;
+            selectedElement.style.left = x + 'px';
+            selectedElement.style.top = y + 'px';
+        }
+
+        function endDrag(e) {
+            active = false;
+        }
+
+        function createUIElement(type) {
+            let el = document.createElement('div');
+            el.className = 'placed draggable';
+            el.setAttribute('data-type', type);
+            el.style.position = 'absolute';
+
+            let label = document.createElement('div');
+            label.textContent = type.charAt(0).toUpperCase() + type.slice(1);
+            label.className = 'editable-label';
+            label.contentEditable = true;
+            label.addEventListener('mousedown', function(e) {
+                e.stopPropagation();
+            });
+            label.addEventListener('blur', function() {
+                if (label.textContent.trim() === '') {
+                    label.textContent = type.charAt(0).toUpperCase() + type.slice(1);
+                }
+            });
+
+            el.appendChild(label);
+
+            let input;
+            if (type === 'textarea') {
+                input = document.createElement('textarea');
+                input.placeholder = "Enter text";
+            } else if (type === 'button') {
+                input = document.createElement('button');
+                input.textContent = "Click Me";
+            } else {
+                input = document.createElement('input');
+                input.type = type;
+            }
+
+            el.appendChild(input);
+
+            input.addEventListener('mousedown', function(e) {
+                e.stopPropagation();
+            });
+
+            el.addEventListener('mousedown', function(event) {
+                selectElement(el);
+                event.stopPropagation();
+            });
+
+            return el;
+        }
+
+        function placeElementOnCanvas(e, element) {
+            const canvas = document.getElementById('canvas');
+            const x = e.clientX - canvas.getBoundingClientRect().left;
+            const y = e.clientY - canvas.getBoundingClientRect().top;
+
+            if (selectedElement && selectedElement.classList.contains('group')) {
+                const groupX = e.clientX - selectedElement.getBoundingClientRect().left;
+                const groupY = e.clientY - selectedElement.getBoundingClientRect().top;
+                element.style.left = groupX + 'px';
+                element.style.top = groupY + 'px';
+                selectedElement.appendChild(element);
+            } else {
+                element.style.left = x + 'px';
+                element.style.top = y + 'px';
+                canvas.appendChild(element);
+            }
+        }
+
+        function selectElement(el) {
+            if (selectedElement) {
+                selectedElement.classList.remove('selected');
+            }
+            selectedElement = el;
+            selectedElement.classList.add('selected');
+        }
+
+        function deselectElement() {
+            if (selectedElement) {
+                selectedElement.classList.remove('selected');
+                selectedElement = null;
+            }
+        }
+
+        function keyAction(e) {
+            if (!selectedElement) return;
+            let dx = 0, dy = 0;
+            const moveAmount = 10;
+            switch (e.key) {
+                case 'ArrowLeft': dx = -moveAmount; break;
+                case 'ArrowRight': dx = moveAmount; break;
+                case 'ArrowUp': dy = -moveAmount; break;
+                case 'ArrowDown': dy = moveAmount; break;
+                case 'Delete':
+                case 'Backspace':
+                    selectedElement.remove();
+                    selectedElement = null;
+                    return;
+            }
+            selectedElement.style.left = (selectedElement.offsetLeft + dx) + 'px';
+            selectedElement.style.top = (selectedElement.offsetTop + dy) + 'px';
+        }
+
+        function createGroupArea(e) {
+            const canvas = document.getElementById('canvas');
+            const groupArea = document.createElement('div');
+            groupArea.className = 'group placed draggable';
+            groupArea.style.position = 'absolute';
+            groupArea.style.left = e.clientX - canvas.getBoundingClientRect().left + 'px';
+            groupArea.style.top = e.clientY - canvas.getBoundingClientRect().top + 'px';
+            groupArea.style.width = '200px';
+            groupArea.style.height = '200px';
+
+            let label = document.createElement('div');
+            label.textContent = "Group";
+            label.className = 'editable-label';
+            label.contentEditable = true;
+            label.addEventListener('mousedown', function(e) {
+                e.stopPropagation();
+            });
+            label.addEventListener('blur', function() {
+                if (label.textContent.trim() === '') {
+                    label.textContent = "Group";
+                }
+            });
+
+            groupArea.appendChild(label);
+            canvas.appendChild(groupArea);
+
+            groupArea.addEventListener('mousedown', function(event) {
+                selectElement(groupArea);
+                event.stopPropagation();
+            });
+
+            selectElement(groupArea);
+
+            let isDragging = false;
+            let isResizing = false;
+            let startX, startY, startWidth, startHeight;
+
+            groupArea.addEventListener('mousedown', function(event) {
+                if (event.offsetX > groupArea.offsetWidth - 10 && event.offsetY > groupArea.offsetHeight - 10) {
+                    isResizing = true;
+                    startX = event.clientX;
+                    startY = event.clientY;
+                    startWidth = groupArea.offsetWidth;
+                    startHeight = groupArea.offsetHeight;
+                } else {
+                    isDragging = true;
+                    startX = event.clientX - parseInt(document.defaultView.getComputedStyle(groupArea).left);
+                    startY = event.clientY - parseInt(document.defaultView.getComputedStyle(groupArea).top);
+                }
+            });
+
+            document.addEventListener('mousemove', function(event) {
+                if (isDragging) {
+                    groupArea.style.left = (event.clientX - startX) + 'px';
+                    groupArea.style.top = (event.clientY - startY) + 'px';
+                } else if (isResizing) {
+                    const width = startWidth + (event.clientX - startX);
+                    const height = startHeight + (event.clientY - startY);
+                    groupArea.style.width = width + 'px';
+                    groupArea.style.height = height + 'px';
+                }
+            });
+
+            document.addEventListener('mouseup', function() {
+                isDragging = false;
+                isResizing = false;
+            });
+        }
+
+        function resizeCanvas() {
+            const canvas = document.getElementById('canvas');
+            const width = document.getElementById('canvasWidth').value;
+            const height = document.getElementById('canvasHeight').value;
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
+        }
+
+        function exportCanvasAsPNG() {
+            const canvasElement = document.getElementById('canvas');
+            html2canvas(canvasElement).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'wireframe.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
     </script>
-  </body>
+</body>
 </html>
+
+	

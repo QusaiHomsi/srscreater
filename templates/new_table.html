@@ -51,6 +51,8 @@
               >{{ channel.channel_name }}</label
             ><br />
             {% endfor %}
+            <input type="checkbox" id="select_all_channels" />
+            <label for="select_all_channels">اختر الكل</label><br />
           </td>
         </tr>
         <tr>
@@ -67,6 +69,8 @@
               >{{ beneficiary.beneficiary_name }}</label
             ><br />
             {% endfor %}
+            <input type="checkbox" id="select_all_beneficiaries" />
+            <label for="select_all_beneficiaries">اختر الكل</label><br />
           </td>
         </tr>
 
@@ -114,7 +118,7 @@
         <tr>
           <th><label for="fees"> بند الرسوم: </label></th>
           <td>
-            <input type="text" id="fees" name="fees" />
+            <textarea type="text" id="fees" name="fees"></textarea>
           </td>
         </tr>
         <tr>
@@ -260,24 +264,40 @@
         });
       },
     });
-
-    // Listen for beforeunload event
-    window.addEventListener("beforeunload", function (e) {
-      if (unsavedChanges) {
-        // Cancel the event as returning a string will prompt a confirmation dialog
-        e.preventDefault();
-        // Chrome requires returnValue to be set
-        e.returnValue = "";
-        // Return the message to display in the confirmation dialog
-        return "هل أنت متأكد أنك تريد مغادرة الصفحة؟ قد تفقد التغييرات التي قمت بها.";
-      }
+    tinymce.init({
+      selector: "#fees_description",
+      language: "ar",
+      plugins: "advlist autolink lists link image charmap print preview anchor",
+      toolbar:
+        "undo redo | formatselect | bold italic backcolor forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat |help",
+      height: 400,
+      content_style: "body { font-family: Arial, sans-serif; font-size: 14px }",
+      directionality: "rtl", // Set text direction to right-to-left
+      setup: function (editor) {
+        editor.on("change", function () {
+          // Set unsavedChanges to true when content changes
+          unsavedChanges = true;
+        });
+      },
     });
 
-    // Listen for form submit event
-    document.querySelector("form").addEventListener("submit", function () {
-      // Set unsavedChanges to false when form is submitted
-      unsavedChanges = false;
-    });
+    // Select All functionality for channels
+    document
+      .getElementById("select_all_channels")
+      .addEventListener("click", function () {
+        let checkboxes = document.querySelectorAll('input[name="channels"]');
+        checkboxes.forEach((checkbox) => (checkbox.checked = this.checked));
+      });
+
+    // Select All functionality for beneficiaries
+    document
+      .getElementById("select_all_beneficiaries")
+      .addEventListener("click", function () {
+        let checkboxes = document.querySelectorAll(
+          'input[name="beneficiaries"]'
+        );
+        checkboxes.forEach((checkbox) => (checkbox.checked = this.checked));
+      });
 
     // Listen for beforeunload event
     window.addEventListener("beforeunload", function (e) {

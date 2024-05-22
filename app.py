@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, jso
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 from datetime import datetime
+import shutil
 
 
 app = Flask(__name__)
@@ -136,9 +137,6 @@ def display_tables():
 def table_details(table_id):
     table = Table.query.get(table_id)
     
-    # Fetch only the screens related to the specified table_id
-    screens = Screen.query.filter_by(table_id=table_id).all()
-    
     # Fetch users connected to screens added
     users = User.query.filter(User.screens.any(table_id=table_id)).all()
     
@@ -150,7 +148,8 @@ def table_details(table_id):
         if user_description:
             user_descriptions[user.id] = user_description.description
     
-    return render_template('table_details.html', table=table, screens=screens, users=users, user_descriptions=user_descriptions)
+    return render_template('table_details.html', table=table, users=users, user_descriptions=user_descriptions)
+
 
 
 
@@ -357,9 +356,7 @@ def delete_table(table_id):
 
     return redirect('/')
 
-
-
-from flask import request, redirect, flash
+    
 
 @app.route('/create_screen_for_table', methods=['POST'])
 def create_screen_for_table():
@@ -367,51 +364,50 @@ def create_screen_for_table():
         # Retrieve form data
         screen_name = request.form['screen_name']
         screen_description = request.form['screen_description']
-      
         table_id = request.form['table_id']
         user_ids = request.form.getlist('user_ids')  # Retrieve multiple user IDs
         
         # Handle file upload
         if 'screenshot_path' not in request.files:
-            
             return redirect(request.url)
 
         screenshot_file = request.files['screenshot_path']
         if screenshot_file.filename == '':
-           
             return redirect(request.url)
 
-        if screenshot_file:
-            timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-            file_extension = screenshot_file.filename.split('.')[-1]
-            filename = f"{secure_filename(screenshot_file.filename)}_{timestamp}.{file_extension}"
-            screenshot_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            screenshot_file.save(screenshot_path)
-        else:
-            screenshot_path = None
+        # Save the original file
+        original_timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+        file_extension = screenshot_file.filename.split('.')[-1]
+        original_filename = secure_filename(screenshot_file.filename)
+        original_path = os.path.join(app.config['UPLOAD_FOLDER'], f"{original_filename}_{original_timestamp}.{file_extension}")
+        screenshot_file.save(original_path)
 
-        # Create a new screen
-        new_screen = Screen(
-            screen_name=screen_name,
-            screen_description=screen_description,
-            screenshot_path=filename,
-            table_id=table_id
-        )
-
-        # Add the selected users to the screen
+        # Create a screen for each user
         for user_id in user_ids:
+            user_timestamp = datetime.now().strftime("%Y%m%d%H%M%S_%f")
+            user_filename = f"{secure_filename(screenshot_file.filename)}_{user_timestamp}.{file_extension}"
+            user_path = os.path.join(app.config['UPLOAD_FOLDER'], user_filename)
+
+            # Copy the original file for the user
+            shutil.copyfile(original_path, user_path)
+
+            new_screen = Screen(
+                screen_name=screen_name,
+                screen_description=screen_description,
+                screenshot_path=user_filename,
+                table_id=table_id
+            )
+            
             user = User.query.get(user_id)
             if user:
                 new_screen.users.append(user)
+            
+            db.session.add(new_screen)
 
-        db.session.add(new_screen)
         db.session.commit()
 
-      
-        
         return redirect(f'/table/{table_id}')
     else:
-     
         return redirect('/')
 
 

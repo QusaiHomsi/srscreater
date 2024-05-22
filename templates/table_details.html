@@ -37,7 +37,6 @@
     </div>
       <br><br><br><br>
 
-
       <table border="1">
         <thead>
           <tr>
@@ -45,9 +44,6 @@
           </tr>
           <tr><td>الاسم</td> <td>المنصب</td> <td>التاريخ</td>
             <td>التوقيع</td>
-            
-            
-             
           </tr>
           <tr><td></td><td></td><td></td><td></td></tr>
           <tr><td></td><td></td><td></td><td></td></tr>
@@ -56,33 +52,25 @@
           <tr><td></td><td></td><td></td><td></td></tr>
           <tr><td></td><td></td><td></td><td></td></tr>
           <tr><td></td><td></td><td></td><td></td></tr>
-          <tr><td></td><td></td><td></td><td></td></tr>
-          
-          
         </thead>
         <tbody>
-          
-          </table>
-        <br><br><br><br><br>
-          <table>
-            <tr>
-            <th colspan="4">الإصدارات</th>
-          </tr>
-          <tr><td>رقم الإصدار</td><td>التاريخ</td> <td>أعده</td><td>التغييرات</td>
-            
-           
-            
-            
-          </tr>
-          <tr><td></td><td></td><td></td><td></td></tr>
-          <tr><td></td><td></td><td></td><td></td></tr>
-          <tr><td></td><td></td><td></td><td></td></tr>
-          <tr><td></td><td></td><td></td><td></td></tr>
-          <tr><td></td><td></td><td></td><td></td></tr>
-          <tr><td></td><td></td><td></td><td></td></tr>
-        </tbody>
-      </table>
-    
+        </table>
+      <br><br><br><br><br>
+        <table>
+          <tr>
+          <th colspan="4">الإصدارات</th>
+        </tr>
+        <tr><td>رقم الإصدار</td><td>التاريخ</td> <td>أعده</td><td>التغييرات</td>
+        </tr>
+        <tr><td></td><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td><td></td></tr>
+      </tbody>
+    </table>
+  
 <br><br><br><br><br><br><br><br><br><br><br>
 <div class="service_description">
   <h1>مقدمة عن الخدمة</h1>
@@ -121,9 +109,6 @@
   </form>
 </div>
 
-  
-
-
 <p style="color: black;">.يتم شرح جميع الأدوار بالتفصيل في كل مرحلة بالجدول الخاص بسير العمل</p>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 <p style="color: red;">قنوات تقديم الخدمة (Service Channels)</p>
@@ -142,65 +127,61 @@
 </ul>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
     
+<!-- Iterate over each user to create a separate table for their screens -->
+{% for user in users %}
+<table>
+    <thead>
+        <tr>
+            <th colspan="5">Screens for {{ user.username }}</th> <!-- Display user's name -->
+        </tr>
+        <tr>
+            <th>الشاشة</th>
+            <th>
+                الوصف (وصف مكونات الشاشة وحقولها والبيانات وتفاصيلها والتحققات
+                وقواعد اعمال)
+            </th>
+            <th>صورة للشاشة</th> 
+            <th>حذف</th>
+            <th>تعديل</th>
+        </tr>
+    </thead>
+    <tbody>
+      {% for screen in user.screens if screen.table_id == table.id %} {# Filter screens by the current table_id #}
+      <tr>
+          <td>{{ screen.screen_name }}</td>
+          <td style="white-space: nowrap; overflow: auto;"><p>{{ screen.screen_description | safe }}</p></td>
+          <td>
+              {% if screen.screenshot_path %}
+              <img
+                  src="{{ url_for('static', filename='uploads/' + screen.screenshot_path) }}"
+                  alt="Screenshot"
+                  style="max-width: 100px; cursor: pointer;"
+                  onclick="showEnlarged(this)"
+              />
+              {% else %} No screenshot available {% endif %}
+          </td>
+          <td>
+              <form
+                  action="/delete_screen/{{ screen.id }}"
+                  method="post"
+                  onsubmit="return confirm('هل انت متاكد من حذف الشاشة؟')"
+              >
+                  <button onclick="screenModified()" class="delete" type="submit">حذف الشاشة</button>
+              </form>
+          </td>
+          <td>
+              <a href="/edit_screen/{{ screen.id }}"
+                  ><button onclick="screenModified()">تعديل معلومات الشاشة</button></a
+              >
+          </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+</table>
+{% endfor %}
 
-
-    <!-- Iterate over each user to create a separate table for their screens -->
-    {% for user in users %}
-    <table>
-        <thead>
-            <tr>
-                <th colspan="5">Screens for {{ user.username }}</th> <!-- Display user's name -->
-            </tr>
-            <tr>
-                <th>الشاشة</th>
-                <th>
-                    الوصف (وصف مكونات الشاشة وحقولها والبيانات وتفاصيلها والتحققات
-                    وقواعد اعمال)
-                </th>
-                <th>صورة للشاشة</th> 
-                <th>حذف</th>
-                <th>تعديل</th>
-            </tr>
-        </thead>
-        <tbody>
-          {% for screen in screens %}
-          <tr>
-              <td>{{ screen.screen_name }}</td>
-              <td style="white-space: nowrap; overflow: auto;"><p>{{ screen.screen_description | safe }}</p></td>
-              <td>
-                  {% if screen.screenshot_path %}
-                  <img
-                      src="{{ url_for('static', filename='uploads/' + screen.screenshot_path) }}"
-                      alt="Screenshot"
-                      style="max-width: 100px; cursor: pointer;"
-                      onclick="showEnlarged(this)"
-                  />
-                  {% else %} No screenshot available {% endif %}
-              </td>
-              <td>
-                  <form
-                      action="/delete_screen/{{ screen.id }}"
-                      method="post"
-                      onsubmit="return confirm('هل انت متاكد من حذف الشاشة؟')"
-                  >
-                      <button onclick="screenModified()" class="delete" type="submit">حذف الشاشة</button>
-                  </form>
-              </td>
-              <td>
-                  <a href="/edit_screen/{{ screen.id }}"
-                      ><button onclick="screenModified()">تعديل معلومات الشاشة</button></a
-                  >
-              </td>
-          </tr>
-          {% endfor %}
-          
-        </tbody>
-    </table>
-    
-    {% endfor %}
 <a href="/add_screen_to_table/{{ table.id }}"
-        ><button onclick="screenModified()">اضافة شاشة</button></a
-    >
+        ><button onclick="screenModified()">اضافة شاشة</button></a>
     <div>
         <a href="/"> <button class="screenspage">الصفحة الرئيسة</button></a>
     </div>
